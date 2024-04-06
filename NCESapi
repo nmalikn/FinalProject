@@ -17,7 +17,8 @@ def scrape_data():
         print("Failed to fetch data from NCES API")
         return None
 
-#Function to store data SQLite DATABASE
+
+#Store data SQLite DATABASE
 def set_up_database(data):
     path = os.path.dirname(os.path.abspath(__file__))
     #conn = sqlite3.connect('your_database.db')
@@ -54,9 +55,9 @@ def set_up_database(data):
     conn.commit()
     conn.close()
 
+#Makes keys for each subject (ONLY STING CANNOT REPEAT)
 def create_subject_table(cur, conn):
         subject = [
-        "VOCRP", #vocab
         "WRIRP", #writing
         "MRPCM", #math
         "RRPCM", #reading
@@ -70,6 +71,24 @@ def create_subject_table(cur, conn):
                         (i, subject[i]))
         conn.commit()
 
+#MAKE MAIN DATABASE --> SUBJECT(NUMBER KEY), YEAR, SCORE, GENDER(1 OR 2), RACE(1,2,3)
+        
+
+#GRAPH DATA SUBJECT SCORE BY YEAR (LINE GRAPH)
+        
+        
+#GRAPH DATA SUBJECT WRITING BY YEAR (FOR RACE 1,2,3)
+        
+#GRAPH DATA SUBJECT MATH BY YEAR (FOR RACE 1,2,3)
+        
+#GRAPH DATA SUBJECT READING BY YEAR (FOR RACE 1,2,3)
+        
+#GRAPH DATA SUBJECT SCIENCE BY YEAR (FOR RACE 1,2,3)
+        
+#GRAPH DATA SUBJECT HISTORY BY YEAR (FOR RACE 1,2,3)
+
+
+
 
 class TestAllMethods(unittest.TestCase):
     def setUp(self):
@@ -79,7 +98,6 @@ class TestAllMethods(unittest.TestCase):
     def tearDown(self):
         # Closes the database connection after each test
         self.conn.close()
-
 
 
 def main():
