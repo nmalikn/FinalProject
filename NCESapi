@@ -1,9 +1,94 @@
 from bs4 import BeautifulSoup
 import re
 import os
-import csv
+import requests
 import unittest
 import sqlite3
 import json
 
+#Function to CALL THE API KEY
+def scrape_data():
+    url = "https://www.nationsreportcard.gov/DataService/GetAdhocData.aspx"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()['result']
+        return data
+    else:
+        print("Failed to fetch data from NCES API")
+        return None
 
+#Function to store data SQLite DATABASE
+def set_up_database(data):
+    path = os.path.dirname(os.path.abspath(__file__))
+    #conn = sqlite3.connect('your_database.db')
+    conn = sqlite3.connect(path + "/" + data)
+    cur = conn.cursor()
+    return cur, conn
+
+#def find_mi_table(cur, conn):
+
+    cur.execute('''CREATE TABLE IF NOT EXISTS Table1 (
+                        id INTEGER PRIMARY KEY,
+                        column1 TEXT,
+                        column2 INTEGER
+                    )''')
+
+    cur.execute('''CREATE TABLE IF NOT EXISTS Table2 (
+                        id INTEGER PRIMARY KEY,
+                        table1_id INTEGER,
+                        column3 TEXT,
+                        FOREIGN KEY (table1_id) REFERENCES Table1 (id)
+                    )''')
+
+    # Insert data into tables
+    for item in data:
+        # Insert into Table1
+        cur.execute('''INSERT INTO Table1 (column1, column2) VALUES (?, ?)''',
+                       (item['column1'], item['column2']))
+        table1_id = cursor.lastrowid
+
+        # Insert into Table2 (sample join example)
+        cur.execute('''INSERT INTO Table2 (table1_id, column3) VALUES (?, ?)''',
+                       (table1_id, item['column3']))
+
+    conn.commit()
+    conn.close()
+
+def create_subject_table(cur, conn):
+        subject = [
+        "VOCRP", #vocab
+        "WRIRP", #writing
+        "MRPCM", #math
+        "RRPCM", #reading
+        "SRPCM", #science
+        "HRPCM", #history 
+        ]
+        cur.execute("DROP TABLE IF EXISTS subject")
+        cur.execute("CREATE TABLE subject (id INTEGER PRIMARY KEY, title TEXT)")
+        for i in range(len(subject)):
+            cur.execute("INSERT INTO subject (id,title) VALUES (?,?)",
+                        (i, subject[i]))
+        conn.commit()
+
+
+class TestAllMethods(unittest.TestCase):
+    def setUp(self):
+        self.cur, self.conn = set_up_database("nces_api.db")
+        create_subject_table(self.cur, self.conn)
+
+    def tearDown(self):
+        # Closes the database connection after each test
+        self.conn.close()
+
+
+
+def main():
+    data = scrape_data()
+    if data:
+        set_up_database(data)
+        print("Data stored successfully!")
+
+
+if __name__ == "__main__":
+    main()
+    unittest.main(verbosity=2)
