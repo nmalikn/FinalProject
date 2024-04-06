@@ -9,7 +9,18 @@ import json
 
 #Function to CALL THE API KEY
 def scrape_data():
-    url = 
+    url = "https://data.michigan.gov/resource/7frj-2rv6"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
+        print (f"Failed to retrieve data from Michigan Government")
+        return None
+    
+
+print (scrape_data())
+
 
 
 def main():
