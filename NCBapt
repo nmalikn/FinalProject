@@ -7,18 +7,20 @@ import sqlite3
 import json
 
 API_key = "e8128ade33840f3a6e329355e63ee69cae8d5dd3"
+parameters = {"key": API_key}
 
 #Function to CALL THE API KEY
 def scrape_data():
-    url = "api.census.gov/data/2020/dec/ddhca"
-    response = requests.get(url)
+    url = "https://api.census.gov/data/2020/dec/ddhca"
+    response = requests.get(url, params=parameters)
     if response.status_code == 200:
         data = response.json()
         return data
     else:
-        print ("")
+        print ("Could not access Census data")
         return None
 
+print (scrape_data())
 
 def set_up_database(data_name):
     path = os.path.dirname(os.path.abspath(__file__))
@@ -36,7 +38,7 @@ def set_up_database(data_name):
 def main():
     data = scrape_data()
     if data:
-        conn = set_up_database()
+        conn = set_up_database("demographic_info.db")
         cur = conn.cursor()
         print("Data stored successfully!")
 
