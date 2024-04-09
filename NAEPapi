@@ -8,15 +8,80 @@ import json
 
 #Function to CALL THE API KEY
 def scrape_data():
-    url = 
+    url = "https://data.michigan.gov/resource/7frj-2rv6"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
+        print (f"Failed to retrieve data from Michigan Government")
+        return None
+
+
+def set_up_database(data_name):
+    path = os.path.dirname(os.path.abspath(__file__))
+    #conn = sqlite3.connect('your_database.db')
+    conn = sqlite3.connect(path + "/" + data_name)
+    return conn
+
+def make_database(cur, conn):
+
+    cur.execute('''CREATE TABLE IF NOT EXISTS year_range (id INTEGER PRIMARY KEY, year TEXT UNIQUE)''')
+
+    cur.execute('''CREATE TABLE IF NOT EXISTS MI_PerCapita_PersonalIncome
+                (id INTEGER PRIMARY KEY, year INTEGER, michigan_percapita_income INTEGER,
+                national_percapita_income INTEGER, michigan_percapita_rank INTEGER )''')
+    
+    cur.execute('''CREATE TABLE IF NOT EXISTS MI_PerCapita_PersonalIncome_PercentChange
+                (id INTEGER PRIMARY KEY, year INTEGER, michigan_percent_change TEXT, national_percent_change TEXT
+                michigan_percent_change_rank INTEGER)''')
+    conn.commit()
+
+def add_data_to_table(data, cur, conn):
+    # will add data to year_range
+
+    for i in range(len(data)):
+        year = data[i]["year"]
+        cur.execute(''' INSERT INTO year_range (id, year)''', (i, year))
+
+    # will add data to MI_PerCapita_PersonalIncome
+
+    for i in range(len(data)):
+        cur.execute('''SELECT id FROM year_range WHERE year = ?''', (data[i]["year"]))
+        year = int(cur.fetchone()[0])
+        michigan_PCPI = int(data[i]["michigan_percapita_personal_income"])
+        national_PCPI = int(data[i]["us_percapita_personal_income"])
+        michigan_PCPI_rank = int(data[i]["michigan_percapitapersonalincomerank"])
+        cur.execute('''INSERT OR IGNORE INTO MI_PerCapita_PersonalIncome (id, year, michigan_percapita_income,
+                    national_percapita_income, michigan_percapita_rank)''', (i, year, michigan_PCPI, national_PCPI, michigan_PCPI_rank))
+        
+    #will add data to MI_PerCapita_PersonalIncome_PercentChange
+
+    for i in range(len(data)):
+        cur.execute('''SELECT id FROM year_range WHERE year = ?''', (data[i]["year"]))
+        year = int(cur.fetchone()[0])
+        michgian_PCPI_change = data[i]["michigan_percapita_personal_income_pct_change"][:4] + "%"
+        national_PCPI_change = data[i]["us_percapita_personal_income_pct_change"][:4] + "%"
+        michigan_PCPI_change_rank = int(data[i]["michigan_percapita_personal_income_pct_change_rank"])
+        cur.execute('''INSERT OR IGNORE INTO MI_PerCapita_PersonalIncome_PercentChange (id, year, michigan_percent_change,
+                    national_percent_change, michigan_percent_change_rank)''', (i, year, michgian_PCPI_change, national_PCPI_change, michigan_PCPI_change_rank))
+        
 
     
+
+print (scrape_data())
+
+
 
 def main():
     data = scrape_data()
     if data:
-        set_up_database(data)
+        conn = set_up_database("personal_income.db")
+        cur = conn.cursor()
         print("Data stored successfully!")
+
+        make_database(cur, conn)
+        add_data_to_table(data, cur, conn)
 
 
 if __name__ == "__main__":
