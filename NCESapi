@@ -21,8 +21,8 @@ def scrape_data():
 #Store data SQLite DATABASE
 def set_up_database(data):
     path = os.path.dirname(os.path.abspath(__file__))
-    #conn = sqlite3.connect('your_database.db')
-    conn = sqlite3.connect(path + "/" + data)
+    conn = sqlite3.connect('your_database.db')
+    #conn = sqlite3.connect(path + "/" + data)
     cur = conn.cursor()
     return cur, conn
 
@@ -65,14 +65,21 @@ def create_subject_table(cur, conn):
         "HRPCM", #history 
         ]
         cur.execute("DROP TABLE IF EXISTS subject")
-        cur.execute("CREATE TABLE subject (id INTEGER PRIMARY KEY, title TEXT)")
+        cur.execute("CREATE TABLE subject (id INTEGER PRIMARY KEY, subject_name TEXT)")
         for i in range(len(subject)):
-            cur.execute("INSERT INTO subject (id,title) VALUES (?,?)",
-                        (i, subject[i]))
+            cur.execute("INSERT INTO subject (id,subject_name) VALUES (?,?)",(i, subject[i]))
         conn.commit()
 
+
 #MAKE MAIN DATABASE --> SUBJECT(NUMBER KEY), YEAR, SCORE, GENDER(1 OR 2), RACE(1,2,3)
-        
+def create_main_table(cur, conn):
+    cur.execute("CREATE TABLE IF NOT EXISTS CompleteData (subject INTEGER PRIMARY KEY, year INTEGER, score INTEGER, gender INTEGER, race TEXT)")
+
+    # for item in ??????:
+    #     # Insert into CompleteData
+    #     cur.execute('''INSERT INTO Table1 (column1, column2) VALUES (?, ?)''', (item['column1'], item['column2']))
+    #     table1_id = cursor.lastrowid
+
 
 #GRAPH DATA SUBJECT SCORE BY YEAR (LINE GRAPH)
         
@@ -103,8 +110,9 @@ class TestAllMethods(unittest.TestCase):
 def main():
     data = scrape_data()
     if data:
-        set_up_database(data)
+        cur, conn = set_up_database(data)
         print("Data stored successfully!")
+    create_subject_table(cur, conn)
 
 
 if __name__ == "__main__":
