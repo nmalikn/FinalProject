@@ -8,11 +8,12 @@ import json
 
 API_key = "e8128ade33840f3a6e329355e63ee69cae8d5dd3"
 parameters = {"key": API_key}
+query_url = "https://api.census.gov/data/2020/dec/ddhca"
 
 #Function to CALL THE API KEY
 def scrape_data():
-    url = "https://api.census.gov/data/2020/dec/ddhca"
-    response = requests.get(url, params=parameters)
+    url = f'{query_url}?get={"what we want"}&for=state:*&key = {API_key}'
+    response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
         return data
