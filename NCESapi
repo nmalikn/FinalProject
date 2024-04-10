@@ -6,16 +6,33 @@ import unittest
 import sqlite3
 import json
 
-#Function to CALL THE API KEY
+#Function to CALL THE API KEY FOR GRADE 8 MICHIGAN
 def scrape_data():
-    url = "https://www.nationsreportcard.gov/DataService/GetAdhocData.aspx"
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()['result']
-        return data
-    else:
-        print("Failed to fetch data from NCES API")
-        return None
+    urls = {
+         "math": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=mathematics&grade=8&subscale=MRPCM&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2015&StackType=RowThenCol",
+        "reading": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=reading&grade=8&subscale=RRPCM&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2015&StackType=RowThenCol",
+        "writing": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=writing&grade=8&subscale=WRIRP&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2007&StackType=RowThenCol",
+        "science": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=science&grade=8&subscale=SRPCM&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2009&StackType=RowThenCol"
+    }
+
+    combined_data = {}
+
+    for subject, url in urls.items():
+        response = requests.get(url)
+        print(response)
+        if response.status_code == 200:
+            data = response.json()['result']
+            combined_data[subject] = data
+            with open('combined_data.json', 'w') as json_file:
+                json.dump(combined_data, json_file)
+        else:
+            print("Failed to fetch data from NCES API")
+    
+    with open('combined_data.json', 'w') as json_file:
+        json.dump(combined_data, json_file)
+    return combined_data
+
+
 
 
 #Store data SQLite DATABASE
@@ -26,34 +43,6 @@ def set_up_database(data):
     cur = conn.cursor()
     return cur, conn
 
-#def find_mi_table(cur, conn):
-
-    cur.execute('''CREATE TABLE IF NOT EXISTS Table1 (
-                        id INTEGER PRIMARY KEY,
-                        column1 TEXT,
-                        column2 INTEGER
-                    )''')
-
-    cur.execute('''CREATE TABLE IF NOT EXISTS Table2 (
-                        id INTEGER PRIMARY KEY,
-                        table1_id INTEGER,
-                        column3 TEXT,
-                        FOREIGN KEY (table1_id) REFERENCES Table1 (id)
-                    )''')
-
-    # Insert data into tables
-    for item in data:
-        # Insert into Table1
-        cur.execute('''INSERT INTO Table1 (column1, column2) VALUES (?, ?)''',
-                       (item['column1'], item['column2']))
-        table1_id = cursor.lastrowid
-
-        # Insert into Table2 (sample join example)
-        cur.execute('''INSERT INTO Table2 (table1_id, column3) VALUES (?, ?)''',
-                       (table1_id, item['column3']))
-
-    conn.commit()
-    conn.close()
 
 #Makes keys for each subject (ONLY STING CANNOT REPEAT)
 def create_subject_table(cur, conn):
@@ -62,7 +51,6 @@ def create_subject_table(cur, conn):
         "MRPCM", #math
         "RRPCM", #reading
         "SRPCM", #science
-        "HRPCM", #history 
         ]
         cur.execute("DROP TABLE IF EXISTS subject")
         cur.execute("CREATE TABLE subject (id INTEGER PRIMARY KEY, subject_name TEXT)")
@@ -72,13 +60,20 @@ def create_subject_table(cur, conn):
 
 
 #MAKE MAIN DATABASE --> SUBJECT(NUMBER KEY), YEAR, SCORE, GENDER(1 OR 2), RACE(1,2,3)
-def create_main_table(cur, conn):
+def create_main_table(filename, cur, conn):
     cur.execute("CREATE TABLE IF NOT EXISTS CompleteData (subject INTEGER PRIMARY KEY, year INTEGER, score INTEGER, gender INTEGER, race TEXT)")
+    
+    f = open(filename)
+    file_data = f.read()
+    f.close()
+    json_data = json.loads(file_data)
 
-    # for item in ??????:
-    #     # Insert into CompleteData
-    #     cur.execute('''INSERT INTO Table1 (column1, column2) VALUES (?, ?)''', (item['column1'], item['column2']))
-    #     table1_id = cursor.lastrowid
+    # for student in json_data:
+    #     cur.execute("SELECT id FROM subject WHERE title == ?", (student["subject"],)) #HAVE A ONE COMMA SO PYTHON KNOWS ITS A TUPLE
+    #     subject = cur.fetchone()[0] #get the first one
+    #     cur.execute("INSERT INTO subject (subject, year, score, gender, race) VALUES (?,?,?,?,?)", 
+    #                 (None, student["year"], student["value"], student["varValue"], student["varValueLabel"]))
+    #     conn.commit()
 
 
 #GRAPH DATA SUBJECT SCORE BY YEAR (LINE GRAPH)
@@ -107,12 +102,16 @@ class TestAllMethods(unittest.TestCase):
         self.conn.close()
 
 
+    
 def main():
     data = scrape_data()
     if data:
         cur, conn = set_up_database(data)
         print("Data stored successfully!")
     create_subject_table(cur, conn)
+    create_main_table("combined_data.json", cur, conn)
+
+
 
 
 if __name__ == "__main__":
