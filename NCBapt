@@ -6,14 +6,33 @@ import unittest
 import sqlite3
 import json
 
+#Important Links to work on this code
+#https://api.census.gov/data/2022/acs/acs1/profile.html
+#https://www.census.gov/library/video/2020/using-api-results-for-multiple-estimates.html
+
+
 API_key = "e8128ade33840f3a6e329355e63ee69cae8d5dd3"
 parameters = {"key": API_key}
-query_url = "https://api.census.gov/data/2020/dec/ddhca"
+query_url = "https://api.census.gov/data/2022/acs/acs1/profile"
+
+#We will use this url to specify variables (after get=) for Michigan using congressional districts as our measuring point
+testing_url = "https://api.census.gov/data/2022/acs/acs1/profile?get=NAME,DP02_0001E,DP03_0128PE&for=congressional%20district:*&in=state:26"
+total_population = "DP02_0001E"
+families_under_10k = "DP03_0076E"
+families_10k_to_14999 = "DP03_0077E"
+families_15k_to_24999 = "DP03_0078E"
+total_pop_under18 = "DP05_0019E"
+pop_percent_white = "DP05_0037PE"
+pop_percent_black = "DP05_0038PE"
+pop_percent_asian = "DP05_0044PE"
+poverty_percent = "DP03_0128PE"
 
 #Function to CALL THE API KEY
 def scrape_data():
-    url = f'{query_url}?get={"what we want"}&for=state:*&key = {API_key}'
+    url = f'{query_url}?get=NAME,{total_population},{pop_percent_black},{poverty_percent}&for=congressional%20district:*&in=state:26'
+    #url = f"{query_url}?get={variable_1},{variable_2}&HISP=2&for=state:26&key={API_key}"
     response = requests.get(url)
+    print (response)
     if response.status_code == 200:
         data = response.json()
         return data
