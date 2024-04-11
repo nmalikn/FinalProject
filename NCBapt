@@ -27,21 +27,34 @@ pop_percent_black = "DP05_0038PE"
 pop_percent_asian = "DP05_0044PE"
 poverty_percent = "DP03_0128PE"
 
+cities_breakdown = "county%20subdivision:*&in=state:26"
+county_breakdown = "county:*&in=state:26"
 #Function to CALL THE API KEY
-def scrape_data():
-    url = f'{query_url}?get=NAME,{total_population},{pop_percent_black},{poverty_percent}&for=congressional%20district:*&in=state:26'
+def scrape_data_cities():
+    url = f'{query_url}?get=NAME,{total_population},{pop_percent_black},{poverty_percent}&for={cities_breakdown}'
     #url = f"{query_url}?get={variable_1},{variable_2}&HISP=2&for=state:26&key={API_key}"
+    response = requests.get(url)
+    #print (response)
+    if response.status_code == 200:
+        data = response.json()
+        #print (len(data))
+        return data
+    else:
+        print ("Could not access Census data")
+        return None
+
+#print (scrape_data_cities())
+
+def scrape_data_counties():
+    url = f"{query_url}?get=NAME,{pop_percent_black},{poverty_percent}&for={county_breakdown}"
     response = requests.get(url)
     print (response)
     if response.status_code == 200:
         data = response.json()
         return data
     else:
-        print ("Could not access Census data")
+        print ("Could not access county data")
         return None
-
-print (scrape_data())
-
 def set_up_database(data_name):
     path = os.path.dirname(os.path.abspath(__file__))
     #conn = sqlite3.connect('your_database.db')
@@ -56,8 +69,9 @@ def set_up_database(data_name):
 
 
 def main():
-    data = scrape_data()
-    if data:
+    city_data = scrape_data_cities()
+    county_data = scrape_data_counties()
+    if city_data and county_data:
         conn = set_up_database("demographic_info.db")
         cur = conn.cursor()
         print("Data stored successfully!")
