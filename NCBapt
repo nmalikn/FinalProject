@@ -28,7 +28,7 @@ pop_percent_asian = "DP05_0044PE"
 poverty_percent = "DP03_0128PE"
 
 cities_breakdown = "county%20subdivision:*&in=state:26"
-county_breakdown = "county:*&in=state:26"
+county_breakdown = "county:*&in=state:*"
 #Function to CALL THE API KEY
 def scrape_data_cities():
     url = f'{query_url}?get=NAME,{total_population},{pop_percent_white},{pop_percent_black},{poverty_percent}&for={cities_breakdown}'
@@ -57,59 +57,89 @@ def scrape_data_counties():
         print ("Could not access county data")
         return None
     
+def scrape_state_names():
+    url = "https://api.census.gov/data/2022/acs/acs1/profile?get=NAME&for=state:*" 
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        #print (data)
+        return data
+    print ("Could not get State data")
+    return None
+
+
 def set_up_database(data_name):
     path = os.path.dirname(os.path.abspath(__file__))
     #conn = sqlite3.connect('your_database.db')
     conn = sqlite3.connect(path + "/" + data_name)
     return conn
         
+
+def make_state_table(state_names, cur, conn):
+    cur.execute('''CREATE TABLE IF NOT EXISTS US_states (id INTEGER PRIMARY KEY, name TEXT UNIQUE)''')
+    id_count = 0
+    for state in state_names:
+        if state_names.index(state) != 0:
+            state = state[0]
+            cur.execute('''INSERT INTO US_states (id, name) VALUES (?,?)''', (id_count, state))
+            id_count += 1
+
+    conn.commit()
+
+
 def make_county_table(county_data, cur, conn):
-    cur.execute('''CREATE TABLE IF NOT EXISTS MI_counties (id INTEGER PRIMARY KEY, Name TEXT UNIQUE )''')
+    cur.execute('''CREATE TABLE IF NOT EXISTS US_counties (id INTEGER PRIMARY KEY, Name TEXT UNIQUE )''')
     id_count = 0
     for item in county_data:
         if county_data.index(item) != 0:
         
             county = item[0].split(",")[0]
-            cur.execute('''INSERT INTO MI_counties (id, Name) VALUES (?,?)''', (id_count, county))
+            cur.execute('''INSERT OR IGNORE INTO US_counties (id, Name) VALUES (?,?)''', (id_count, county))
             id_count += 1
 
     conn.commit()
 
-def make_main_table(county_data, city_data, cur, conn):
-    cur.execute('''CREATE TABLE IF NOT EXISTS MI_Demographic_Info (id INTEGER PRIMARY KEY, city TEXT, county_id INTEGER,
-                population INTEGER, white_population_percentage TEXT, black_population_percentage TEXT, poverty_percentage TEXT)''')
+def make_main_table(county_data, cur, conn):
+    cur.execute('''CREATE TABLE IF NOT EXISTS US_Demographic_Info (id INTEGER PRIMARY KEY, county_id INTEGER, state_id INTEGER,
+                population INTEGER, white_population_percentage INTEGER, black_population_percentage INTEGER, poverty_percentage INTEGER)''')
     
     #add cities to the table
     id_count = 0
-    for item in city_data:
-        if city_data.index(item) != 0:
-            city = item[0].split(",")[0]
-            print (item[0].split(","))
-            county = item[0].split(",")[1].strip()
-            cur.execute('''SELECT id FROM MI_counties WHERE Name = ?''',(county,))
-            county_id = int(cur.fetchone()[0])
-            population = int(item[1])
-            white_percentage = item[2] + "%"
-            black_percentage = item[3] + "%"
-            poverty_percentage = item[4] + "%"
+    # for item in city_data:
+    #     if city_data.index(item) != 0:
+    #         city = item[0].split(",")[0]
+    #         print (item[0].split(","))
+    #         county = item[0].split(",")[1].strip()
+    #         cur.execute('''SELECT id FROM MI_counties WHERE Name = ?''',(county,))
+    #         county_id = int(cur.fetchone()[0])
+    #         population = int(item[1])
+    #         white_percentage = float(item[2])
+    #         black_percentage = float(item[3])
+    #         poverty_percentage = float(item[4])
 
-            cur.execute('''INSERT INTO MI_Demographic_Info (id, city, county_id, population, white_population_percentage,
-                        black_population_percentage, poverty_percentage) VALUES (?,?,?,?,?,?,?)''', (id_count, city, county_id, population, 
-                                                                                                    white_percentage, black_percentage, poverty_percentage))
-            id_count += 1
+    #         cur.execute('''INSERT INTO MI_Demographic_Info (id, city, county_id, population, white_population_percentage,
+    #                     black_population_percentage, poverty_percentage) VALUES (?,?,?,?,?,?,?)''', (id_count, city, county_id, population, 
+    #                                                                                                 white_percentage, black_percentage, poverty_percentage))
+    #         id_count += 1
         
     #add counties to the table:
     for item in county_data:
         if county_data.index(item) != 0:
             county = item[0].split(",")[0].strip()
-            cur.execute('''SELECT id FROM MI_counties WHERE Name = ?''', (county,))
+            cur.execute('''SELECT id FROM US_counties WHERE Name = ?''', (county,))
             county_id = int(cur.fetchone()[0])
-            population = int(item[1])
-            white_percentage = item[2] + "%"
-            black_percentage = item[3] + "%"
-            poverty_percentage = item[4] + "%"
-            cur.execute('''INSERT INTO MI_Demographic_Info (id, city, county_id, population, white_population_percentage,
-                        black_population_percentage, poverty_percentage) VALUES (?,?,?,?,?,?,?)''', (id_count, "NULL", county_id, population, 
+            state = item[0].split(",")[-1].strip()
+            cur.execute('''SELECT id FROM US_states WHERE name = ?''', (state,))
+            state_id = int(cur.fetchone()[0])
+            if item[1] == None:
+                population = "NULL"
+            else:
+                population = int(item[1])
+            white_percentage = float(item[2])
+            black_percentage = float(item[3])
+            poverty_percentage = float(item[4])
+            cur.execute('''INSERT INTO US_Demographic_Info (id, county_id, state_id, population, white_population_percentage,
+                        black_population_percentage, poverty_percentage) VALUES (?,?,?,?,?,?,?)''', (id_count, county_id, state_id, population, 
                                                                                                     white_percentage, black_percentage, poverty_percentage))
             id_count += 1
         
@@ -138,14 +168,16 @@ def make_main_table(county_data, city_data, cur, conn):
 
 
 def main():
-    city_data = scrape_data_cities()
+    #city_data = scrape_data_cities()
     county_data = scrape_data_counties()
-    if city_data and county_data:
+    state_data = scrape_state_names()
+    if county_data:
         conn = set_up_database("demographic_info.db")
         cur = conn.cursor()
         print("Data stored successfully!")
         make_county_table(county_data, cur, conn)
-        make_main_table(county_data, city_data, cur, conn)
+        make_state_table(state_data, cur, conn)
+        make_main_table(county_data, cur, conn)
 
 
 if __name__ == "__main__":
