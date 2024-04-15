@@ -61,19 +61,21 @@ def create_subject_table(cur, conn):
 
 #MAKE MAIN DATABASE --> SUBJECT(NUMBER KEY), YEAR, SCORE, GENDER(1 OR 2), RACE(1,2,3)
 def create_main_table(filename, cur, conn):
-    cur.execute("CREATE TABLE IF NOT EXISTS CompleteData (subject INTEGER PRIMARY KEY, year INTEGER, score INTEGER, gender INTEGER, race TEXT)")
+    cur.execute("CREATE TABLE IF NOT EXISTS CompleteData (subject INTEGER PRIMARY KEY, year INTEGER, score DEC, gender TEXT, race TEXT)")
     
     f = open(filename)
     file_data = f.read()
     f.close()
     json_data = json.loads(file_data)
 
-    # for student in json_data:
-    #     cur.execute("SELECT id FROM subject WHERE title == ?", (student["subject"],)) #HAVE A ONE COMMA SO PYTHON KNOWS ITS A TUPLE
-    #     subject = cur.fetchone()[0] #get the first one
-    #     cur.execute("INSERT INTO subject (subject, year, score, gender, race) VALUES (?,?,?,?,?)", 
-    #                 (None, student["year"], student["value"], student["varValue"], student["varValueLabel"]))
-    #     conn.commit()
+    for subject, students in json_data.items():
+            #print(students)
+            for student in students:
+                print(student)
+                subject_line = cur.execute("SELECT id FROM subject WHERE subject_name == ?", (student["scale"],)).fetchone()[0]
+                cur.execute("INSERT OR IGNORE INTO CompleteData (subject, year, score, gender, race) VALUES (?,?,?,?,?)", 
+                            (subject_line, student["year"], student["value"], student["varValue"], student["varValueLabel"]))
+                conn.commit()
 
 
 #GRAPH DATA SUBJECT SCORE BY YEAR (LINE GRAPH)
