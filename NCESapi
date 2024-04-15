@@ -1,18 +1,15 @@
-from bs4 import BeautifulSoup
-import re
 import os
 import requests
 import unittest
 import sqlite3
 import json
 
-#Function to CALL THE API KEY FOR GRADE 8 MICHIGAN
+#Function to CALL THE API KEY FOR PUBLIC GRADE 8 MICHIGAN
 def scrape_data():
     urls = {
-         "math": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=mathematics&grade=8&subscale=MRPCM&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2015&StackType=RowThenCol",
+        "math": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=mathematics&grade=8&subscale=MRPCM&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2015&StackType=RowThenCol",
         "reading": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=reading&grade=8&subscale=RRPCM&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2015&StackType=RowThenCol",
         "writing": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=writing&grade=8&subscale=WRIRP&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2007&StackType=RowThenCol",
-        "science": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=science&grade=8&subscale=SRPCM&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2009&StackType=RowThenCol"
     }
 
     combined_data = {}
@@ -28,11 +25,15 @@ def scrape_data():
         else:
             print("Failed to fetch data from NCES API")
     
-    with open('combined_data.json', 'w') as json_file:
+    #NEED TO SAVE WITHIN THE CORRECT FOLDER
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(script_dir)
+    final_project_dir = os.path.join(parent_dir, "FinalProject")
+    json_file_path = os.path.join(final_project_dir, 'combined_data.json')
+    
+    with open(json_file_path, 'w') as json_file:
         json.dump(combined_data, json_file)
     return combined_data
-
-
 
 
 #Store data SQLite DATABASE
@@ -50,7 +51,6 @@ def create_subject_table(cur, conn):
         "WRIRP", #writing
         "MRPCM", #math
         "RRPCM", #reading
-        "SRPCM", #science
         ]
         cur.execute("DROP TABLE IF EXISTS subject")
         cur.execute("CREATE TABLE subject (id INTEGER PRIMARY KEY, subject_name TEXT)")
