@@ -32,9 +32,7 @@ county_breakdown = "county:*&in=state:*"
 #Function to CALL THE API KEY
 def scrape_data_cities():
     url = f'{query_url}?get=NAME,{total_population},{pop_percent_white},{pop_percent_black},{poverty_percent}&for={cities_breakdown}'
-    #url = f"{query_url}?get={variable_1},{variable_2}&HISP=2&for=state:26&key={API_key}"
     response = requests.get(url)
-    #print (response)
     if response.status_code == 200:
         data = response.json()
         print (data)
@@ -48,10 +46,9 @@ def scrape_data_cities():
 def scrape_data_counties():
     url = f"{query_url}?get=NAME,{total_population},{pop_percent_white},{pop_percent_black},{poverty_percent}&for={county_breakdown}"
     response = requests.get(url)
-    #print (response)
     if response.status_code == 200:
         data = response.json()
-        print (data)
+        #print (data)
         return data
     else:
         print ("Could not access county data")
@@ -70,7 +67,6 @@ def scrape_state_names():
 
 def set_up_database(data_name):
     path = os.path.dirname(os.path.abspath(__file__))
-    #conn = sqlite3.connect('your_database.db')
     conn = sqlite3.connect(path + "/" + data_name)
     return conn
         
@@ -81,7 +77,7 @@ def make_state_table(state_names, cur, conn):
     for state in state_names:
         if state_names.index(state) != 0:
             state = state[0]
-            cur.execute('''INSERT INTO US_states (id, name) VALUES (?,?)''', (id_count, state))
+            cur.execute('''INSERT OR IGNORE INTO US_states (id, name) VALUES (?,?)''', (id_count, state))
             id_count += 1
 
     conn.commit()
@@ -107,44 +103,39 @@ def make_main_table(cur, conn):
 
 def add_main_data(county_data, cur, conn):
     # set up id_counts and delete first index in data (which gave the variable names)
+    county_data.pop(0)
     cur.execute('''SELECT COUNT(id) FROM US_Demographic_Info''')
     id_count = int(cur.fetchone()[0])
-    end_count = id_count + 25
-    county_data.pop(0)
+    if id_count == 848:
+        print ("All data has been added! Congrats for not getting carpal tunnel syndrome!")
+        return None
+    if id_count + 25 > len(county_data):
+        end_count = len(county_data)
+    else:
+        end_count = id_count + 25
     
     
     #add counties to the table: 
-    for item in county_data:
-        while id_count <= end_count:
-            if county_data.index(item) == id_count:
-                county = item[0].split(",")[0].strip()
-                cur.execute('''SELECT id FROM US_counties WHERE Name = ?''', (county,))
-                county_id = int(cur.fetchone()[0])
-                state = item[0].split(",")[-1].strip()
-                cur.execute('''SELECT id FROM US_states WHERE name = ?''', (state,))
-                state_id = int(cur.fetchone()[0])
-                if item[1] == None:
-                    population = "NULL"
-                else:
-                    population = int(item[1])
-                white_percentage = float(item[2])
-                black_percentage = float(item[3])
-                poverty_percentage = float(item[4])
-                cur.execute('''INSERT INTO US_Demographic_Info (id, county_id, state_id, population, white_population_percentage,
-                            black_population_percentage, poverty_percentage) VALUES (?,?,?,?,?,?,?)''', (id_count, county_id, state_id, population, 
-                                                                                                        white_percentage, black_percentage, poverty_percentage))
-                id_count += 1
+    while id_count < end_count:
+        item = county_data[id_count]
+        county = item[0].split(",")[0].strip()
+        cur.execute('''SELECT id FROM US_counties WHERE Name = ?''', (county,))
+        county_id = int(cur.fetchone()[0])
+        state = item[0].split(",")[-1].strip()
+        cur.execute('''SELECT id FROM US_states WHERE name = ?''', (state,))
+        state_id = int(cur.fetchone()[0])
+        if item[1] == None:
+            population = "NULL"
+        else:
+            population = int(item[1])
+        white_percentage = float(item[2])
+        black_percentage = float(item[3])
+        poverty_percentage = float(item[4])
+        cur.execute('''INSERT INTO US_Demographic_Info (id, county_id, state_id, population, white_population_percentage,
+                    black_population_percentage, poverty_percentage) VALUES (?,?,?,?,?,?,?)''', (id_count, county_id, state_id, population, 
+                                                                                                white_percentage, black_percentage, poverty_percentage))
+        id_count += 1
         
-    conn.commit()
-
-
-
-
-
-
-
-
-
     conn.commit()
 
 
@@ -160,7 +151,6 @@ def add_main_data(county_data, cur, conn):
 
 
 def main():
-    #city_data = scrape_data_cities()
     county_data = scrape_data_counties()
     state_data = scrape_state_names()
     if county_data:

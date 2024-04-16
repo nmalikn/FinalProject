@@ -20,37 +20,37 @@ def scrape_data():
 
 def set_up_database(data_name):
     path = os.path.dirname(os.path.abspath(__file__))
-    #conn = sqlite3.connect('your_database.db')
     conn = sqlite3.connect(path + "/" + data_name)
     return conn
 
 def make_database(cur, conn):
-
-    #cur.execute('''CREATE TABLE IF NOT EXISTS year_range (id INTEGER PRIMARY KEY, year TEXT UNIQUE)''')
 
     cur.execute('''CREATE TABLE IF NOT EXISTS MI_PerCapita_PersonalIncome
                 (id INTEGER PRIMARY KEY, year INTEGER, michigan_percapita_income INTEGER,
                 national_percapita_income INTEGER, michigan_percapita_rank INTEGER, michigan_percent_change INTEGER,
                 national_percent_change INTEGER, michigan_percent_change_rank INTEGER )''')
     
-    # cur.execute('''CREATE TABLE IF NOT EXISTS MI_PerCapita_PersonalIncome_PercentChange
-    #             (id INTEGER PRIMARY KEY, year INTEGER, michigan_percent_change TEXT, national_percent_change TEXT,
-    #             michigan_percent_change_rank INTEGER)''')
+
     conn.commit()
 
 def add_data_to_table(data, cur, conn):
-    # will add data to year_range
-
-    # for i in range(len(data)):
-    #     year = data[i]["year"]
-    #     cur.execute(''' INSERT INTO year_range (id, year) VALUES (?,?)''', (i, year))
+    #set up id_counts to only do 25 at a time
+    cur.execute('''SELECT COUNT(id) FROM MI_PerCapita_PersonalIncome ''')
+    id_count = int(cur.fetchone()[0])
+    if id_count == 32:
+        print ("All data has been added")
+        return None
+    if id_count + 25 > len(data):
+        end_count = len(data)
+    else:
+        end_count = id_count + 25
 
     # will add data to MI_PerCapita_PersonalIncome
 
-    for i in range(len(data)):
+
+    while id_count < end_count:
+        i = id_count
         year = data[i]["year"]
-        #cur.execute('''SELECT id FROM year_range WHERE year = ?''', (year,))
-        #year_id = int(cur.fetchone()[0])
         michigan_PCPI = int(data[i]["michigan_percapita_personal_income"])
         national_PCPI = int(data[i]["us_percapita_personal_income"])
         michigan_PCPI_rank = int(data[i]["michigan_perpersonalincomepercapitarank"])
@@ -62,18 +62,8 @@ def add_data_to_table(data, cur, conn):
                     national_percapita_income, michigan_percapita_rank, michigan_percent_change,
                     national_percent_change, michigan_percent_change_rank) VALUES (?,?,?,?,?,?,?,?)''', 
                     (i, year, michigan_PCPI, national_PCPI, michigan_PCPI_rank, michigan_PCPI_change, national_PCPI_change, michigan_PCPI_change_rank))
+        id_count += 1
         
-    #will add data to MI_PerCapita_PersonalIncome_PercentChange
-
-    # for i in range(len(data)):
-    #     year = data[i]["year"]
-    #     cur.execute('''SELECT id FROM year_range WHERE year = ?''', (year,))
-    #     year_id = int(cur.fetchone()[0])
-    #     michigan_PCPI_change = data[i]["michigan_percapita_personal_income_pct_change"][:4] + "%"
-    #     national_PCPI_change = data[i]["us_percapita_personal_income_pct_change"][:4] + "%"
-    #     michigan_PCPI_change_rank = int(data[i]["michigan_percapita_personal_income_pct_change_rank"])
-    #     cur.execute('''INSERT OR IGNORE INTO MI_PerCapita_PersonalIncome_PercentChange (id, year, michigan_percent_change,
-    #                 national_percent_change, michigan_percent_change_rank) VALUES (?,?,?,?,?)''', (i, year_id, michigan_PCPI_change, national_PCPI_change, michigan_PCPI_change_rank))
         
     conn.commit()
     
