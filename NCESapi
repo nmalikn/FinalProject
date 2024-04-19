@@ -4,15 +4,22 @@ import unittest
 import sqlite3
 import json
 
-#Function to CALL THE API KEY FOR PUBLIC MICHIGAN
+#Function to CALL THE API KEY FOR GRADE 8 PUBLIC MICHIGAN
 def scrape_data():
     urls = {
         "math": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=mathematics&grade=8&subscale=MRPCM&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2015&StackType=RowThenCol",
         "math2": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=mathematics&grade=8&subscale=MRPCM&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2017&StackType=RowThenCol",
+        "math3": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=mathematics&grade=8&subscale=MRPCM&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2022&StackType=RowThenCol",
         "reading": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=reading&grade=8&subscale=RRPCM&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2015&StackType=RowThenCol",
         "reading2": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=reading&grade=8&subscale=RRPCM&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2017&StackType=RowThenCol",
         "writing": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=writing&grade=8&subscale=WRIRP&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2007&StackType=RowThenCol",
-        "writing2": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=writing&grade=8&subscale=WRIRP&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2002&StackType=RowThenCol"
+        "writing2": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=writing&grade=8&subscale=WRIRP&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2002&StackType=RowThenCol",
+        "science": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=science&grade=8&subscale=SRPUV&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2015&StackType=RowThenCol",
+        "science2": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=science&grade=8&subscale=SRPUV&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2011&StackType=RowThenCol",
+        "civics": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=civics&grade=8&subscale=CIVRP&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2022&StackType=RowThenCol",
+        "civics2": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=civics&grade=8&subscale=CIVRP&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2018&StackType=RowThenCol",
+        "geo": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=geography&grade=8&subscale=GRPCM&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2018&StackType=RowThenCol",
+        "geo2": "https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx?type=data&subject=geography&grade=8&subscale=GRPCM&variable=SDRACE%2BGENDER&categoryindex=2%2B1,2%2B2,3%2B1,3%2B2&jurisdiction=NP,MI&stattype=MN%3AMN&Year=2014&StackType=RowThenCol",
     }
 
     combined_data = {}
@@ -28,6 +35,7 @@ def scrape_data():
         else:
             print("Failed to fetch data from NCES API")
     
+    
     #NEED TO SAVE WITHIN THE CORRECT FOLDER
     script_dir = os.path.dirname(os.path.abspath(__file__))
     parent_dir = os.path.dirname(script_dir)
@@ -36,48 +44,71 @@ def scrape_data():
     
     with open(json_file_path, 'w') as json_file:
         json.dump(combined_data, json_file)
+
+    combined_data = rewrite_json_data(combined_data)
     return combined_data
+
+#turn JSON into a Dictionary
+def rewrite_json_data(combined_data):
+    new_dict = {}
+    id = 0
+    subject_id = 0
+    for subject, students in combined_data.items():
+        for item in students:
+            scale = item["scale"]
+            year = item["year"]
+            varValueLabel = item["varValueLabel"]
+            value = item["value"] 
+            key = (subject_id, scale, year, value, varValueLabel)
+            if key not in new_dict:
+                new_dict[key] = []
+            new_dict[key].append(id)
+            id += 1
+        subject_id += 1
+
+    #print(new_dict)
+    return new_dict
 
 
 #Store data SQLite DATABASE
 def set_up_database(data):
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect('your_database.db')
-    #conn = sqlite3.connect(path + "/" + data)
     cur = conn.cursor()
     return cur, conn
-
+    
 
 #Makes keys for each subject (ONLY STING CANNOT REPEAT)
-def create_subject_table(data, cur, conn):
-        subject_id = [
-        "WRIRP", #writing
-        "MRPCM", #math
-        "RRPCM", #reading
-        ]
-        cur.execute("DROP TABLE IF EXISTS subject_id")
-        cur.execute("CREATE TABLE subject_id (id INTEGER PRIMARY KEY, subject_name TEXT)")
-        for i in range(len(subject_id)):
-            cur.execute("INSERT INTO subject_id (id,subject_name) VALUES (?,?)",(i, subject_id[i]))
-        conn.commit()
+# def create_subject_table(data, cur, conn):
+#         subject_id = [
+#         "WRIRP", #writing
+#         "MRPCM", #math
+#         "RRPCM", #reading
+#         ]
+#         cur.execute("DROP TABLE IF EXISTS subject_id")
+#         cur.execute("CREATE TABLE subject_id (id INTEGER PRIMARY KEY, subject_name TEXT)")
+#         for i in range(len(subject_id)):
+#             cur.execute("INSERT INTO subject_id (id,subject_name) VALUES (?,?)",(i, subject_id[i]))
+#         conn.commit()
 
 
 #Make keys for each race and gender (STRING CANNOT REPEAT)
-def create_gender_race_table(data, cur, conn):
-    gender_race_id = [
-        "1+1", #male white
-        "2+1", #black male
-        "3+1", #hispanic male
-        "1+2", #while female
-        "2+2", #black female
-        "3+2", #hispanic female
-        ]
-    cur.execute("DROP TABLE IF EXISTS gender_race_id")
-    cur.execute("CREATE TABLE gender_race_id (id INTEGER PRIMARY KEY, gender_race TEXT)")
-    for i in range(len(gender_race_id)):
-        cur.execute("INSERT INTO gender_race_id (id,gender_race) VALUES (?,?)",(i, gender_race_id[i]))
-    conn.commit()
-    
+# def create_gender_race_table(data, cur, conn):
+#     gender_race_id = [
+#         "1+1", #male white
+#         "2+1", #black male
+#         "3+1", #hispanic male
+#         "1+2", #while female
+#         "2+2", #black female
+#         "3+2", #hispanic female
+#         ]
+#     cur.execute("DROP TABLE IF EXISTS gender_race_id")
+#     cur.execute("CREATE TABLE gender_race_id (id INTEGER PRIMARY KEY, gender_race TEXT)")
+#     for i in range(len(gender_race_id)):
+#         cur.execute("INSERT INTO gender_race_id (id,gender_race) VALUES (?,?)",(i, gender_race_id[i]))
+#     conn.commit()
+
+
 
 
 #MAKE MAIN DATABASE --> SUBJECT(NUMBER KEY), YEAR, SCORE, GENDER/RACE
@@ -89,49 +120,47 @@ def create_main_table(filename, cur, conn):
     f.close()
     json_data = json.loads(file_data)
 
-    create_subject_table(json_data, cur, conn)
-    create_gender_race_table(json_data, cur, conn)
+    new_data = rewrite_json_data(json_data)
+    id_count = 0
+    temp = 0
 
-
-    for subject, students in json_data.items():
-        cur.execute("SELECT COUNT(*) FROM CompleteData")
-        start_index = 0
-        end_index = min(start_index + 25, len(students)) #get 25 at a time until it gets all the data
-        id = 0
-        
-        while start_index < end_index:
-            for student in students[start_index:end_index]:
-                subject_line = cur.execute("SELECT id FROM subject_id WHERE subject_name == ?", (student["scale"],)).fetchone()[0]
-                gender_race = cur.execute("SELECT id FROM gender_race_id WHERE gender_race == ?", (student["varValue"],)).fetchone()[0]
-                print(gender_race)
-                cur.execute("INSERT OR REPLACE INTO CompleteData (id, subject_id, year, score, gender_race_id) VALUES (?,?,?,?,?)", 
-                                    (id, subject_line, student["year"], student["value"], gender_race))
-                start_index += 1
-                id += 1
-
-    conn.commit()
+    while temp < len(new_data):
+        print(len(new_data))
+        for i in range(temp, temp + 25):
+            if i < len(new_data):
+                student, ids = list(new_data.items())[i]
+                for id in ids:
+                    subject_id = student[0]
+                    year = student[2]
+                    value = student[3]
+                    gender_race = student[4]
+                    
+                    cur.execute("INSERT OR IGNORE INTO CompleteData (id, subject_id, year, score, gender_race_id) VALUES (?,?,?,?,?)", 
+                                (id_count, subject_id, year, value, gender_race))
+                    
+                    id_count += 1
+            temp += 25
+            conn.commit()
+            
 
 
 
 class TestAllMethods(unittest.TestCase):
     def setUp(self):
         self.cur, self.conn = set_up_database("nces_api.db")
-        create_subject_table(self.cur, self.conn)
+        #create_subject_table(self.cur, self.conn)
 
     def tearDown(self):
         # Closes the database connection after each test
         self.conn.close()
 
-
-    
+ 
 def main():
     data = scrape_data()
     if data:
         cur, conn = set_up_database(data)
         print("Data stored successfully!")
     create_main_table("combined_data.json", cur, conn)
-
-
 
 
 if __name__ == "__main__":
