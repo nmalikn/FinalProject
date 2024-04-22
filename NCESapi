@@ -59,13 +59,17 @@ def rewrite_json_data(combined_data):
             year = item["year"]
             varValueLabel = item["varValueLabel"]
             value = item["value"] 
-            key = (subject_id, scale, year, value, varValueLabel)
+
+            if varValueLabel not in new_dict:
+                new_dict[varValueLabel] = {"gender_race_id": len(new_dict) + 1, "data": []}
+            gender_race_id = new_dict[varValueLabel]["gender_race_id"]
+
+            key = (subject_id, scale, year, value, gender_race_id)
             if key not in new_dict:
                 new_dict[key] = []
             new_dict[key].append(id)
             id += 1
         subject_id += 1
-
     #print(new_dict)
     return new_dict
 
@@ -78,37 +82,21 @@ def set_up_database(data):
     return cur, conn
     
 
-#Makes keys for each subject (ONLY STING CANNOT REPEAT)
-# def create_subject_table(data, cur, conn):
-#         subject_id = [
-#         "WRIRP", #writing
-#         "MRPCM", #math
-#         "RRPCM", #reading
-#         ]
-#         cur.execute("DROP TABLE IF EXISTS subject_id")
-#         cur.execute("CREATE TABLE subject_id (id INTEGER PRIMARY KEY, subject_name TEXT)")
-#         for i in range(len(subject_id)):
-#             cur.execute("INSERT INTO subject_id (id,subject_name) VALUES (?,?)",(i, subject_id[i]))
-#         conn.commit()
-
-
 #Make keys for each race and gender (STRING CANNOT REPEAT)
-# def create_gender_race_table(data, cur, conn):
-#     gender_race_id = [
-#         "1+1", #male white
-#         "2+1", #black male
-#         "3+1", #hispanic male
-#         "1+2", #while female
-#         "2+2", #black female
-#         "3+2", #hispanic female
-#         ]
-#     cur.execute("DROP TABLE IF EXISTS gender_race_id")
-#     cur.execute("CREATE TABLE gender_race_id (id INTEGER PRIMARY KEY, gender_race TEXT)")
-#     for i in range(len(gender_race_id)):
-#         cur.execute("INSERT INTO gender_race_id (id,gender_race) VALUES (?,?)",(i, gender_race_id[i]))
-#     conn.commit()
-
-
+def create_gender_race_table(data, cur, conn):
+    gender_race_id = [
+        "White+Male",
+        "Black+Male",
+        "Hispanic+Male",
+        "White+Female",
+        "Black+Female",
+        "Hispanic+Female",
+        ]
+    cur.execute("DROP TABLE IF EXISTS gender_race_id")
+    cur.execute("CREATE TABLE gender_race_id (id INTEGER PRIMARY KEY, gender_race TEXT)")
+    for i in range(len(gender_race_id)):
+        cur.execute("INSERT INTO gender_race_id (id,gender_race) VALUES (?,?)",(i, gender_race_id[i]))
+    conn.commit()
 
 
 #MAKE MAIN DATABASE --> SUBJECT(NUMBER KEY), YEAR, SCORE, GENDER/RACE
@@ -121,34 +109,37 @@ def create_main_table(filename, cur, conn):
     json_data = json.loads(file_data)
 
     new_data = rewrite_json_data(json_data)
+    print(new_data)
     id_count = 0
     temp = 0
-
-    while temp < len(new_data):
-        print(len(new_data))
+    
+    while temp < 100:
         for i in range(temp, temp + 25):
             if i < len(new_data):
                 student, ids = list(new_data.items())[i]
+
                 for id in ids:
-                    subject_id = student[0]
-                    year = student[2]
-                    value = student[3]
-                    gender_race = student[4]
-                    
-                    cur.execute("INSERT OR IGNORE INTO CompleteData (id, subject_id, year, score, gender_race_id) VALUES (?,?,?,?,?)", 
-                                (id_count, subject_id, year, value, gender_race))
-                    
-                    id_count += 1
+                    if isinstance(id, int): #this SHOULD have only kept the int but there are still letters showing up and I don't know how
+                        print(f'ID IS HERE {id}')
+                        subject_id = student[0]
+                        year = student[2]
+                        value = student[3]
+                        gender_race_id = student[4]
+
+                        cur.execute("INSERT OR IGNORE INTO CompleteData (id, subject_id, year, score, gender_race_id) VALUES (?,?,?,?,?)", 
+                                    (id_count, subject_id, year, value, gender_race_id))
+                        
+                        id_count += 1
             temp += 25
             conn.commit()
             
 
 
-
 class TestAllMethods(unittest.TestCase):
     def setUp(self):
         self.cur, self.conn = set_up_database("nces_api.db")
-        #create_subject_table(self.cur, self.conn)
+        create_gender_race_table("combined_data.json", self.cur, self.conn)
+        create_main_table("combined_data.json", self.cur, self.conn)
 
     def tearDown(self):
         # Closes the database connection after each test
@@ -160,6 +151,7 @@ def main():
     if data:
         cur, conn = set_up_database(data)
         print("Data stored successfully!")
+    create_gender_race_table("combined_data.json", cur, conn)
     create_main_table("combined_data.json", cur, conn)
 
 
