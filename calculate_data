@@ -1,0 +1,99 @@
+from bs4 import BeautifulSoup
+import re
+import os
+import requests
+import unittest
+import sqlite3
+import json
+
+# For calculations about poverty percentage, we will assign the following variable to 11.5, which is the national poverty rate in the United States
+national_poverty_rate = 11.5
+
+# This file will be used to pull our data from the database and make calculations based on our findings. We will store our calculations
+# in dictionaries and dump them into a json file. From there, we will load the json file and make visualizations based on the data.
+def access_table(db_name):
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path + "/" + db_name)
+    cur = conn.cursor()
+    return conn
+
+def get_michigan_data(cur, conn):
+    cur.execute('''SELECT id FROM US_states WHERE name = 'Michigan' ''')
+    id = int(cur.fetchone()[0])
+    
+    cur.execute('''SELECT county_id, population, white_population_percentage, black_population_percentage, poverty_percentage
+                FROM US_Demographic_Info WHERE state_id = ?''', (id,))
+    michigan_data = cur.fetchall()
+
+    county_name_list = []
+    for county in michigan_data:
+        county_id = county[0]
+        cur.execute('''SELECT Name FROM US_counties WHERE id = ?''', (county_id,))
+        county_name = cur.fetchone()[0]
+        county_name_list.append(county_name)
+
+    michigan_data_dict = {}
+    for county in county_name_list:
+        michigan_data_dict[county] = {}
+    for i in range(len(county_name_list)):
+        county_id = michigan_data[i][0]
+        population = michigan_data[i][1]
+        white_population = michigan_data[i][2]
+        black_population = michigan_data[i][3]
+        poverty_percentage = michigan_data[i][4]
+
+        michigan_data_dict[county_name_list[i]]["county id"] = county_id
+        michigan_data_dict[county_name_list[i]]["population"] = population
+        michigan_data_dict[county_name_list[i]]["white percentage"] = white_population
+        michigan_data_dict[county_name_list[i]]["black percentage"] = black_population
+        michigan_data_dict[county_name_list[i]]["poverty percentage"] = poverty_percentage
+
+    #print (michigan_data_dict)
+    # print (michigan_data)
+    # print (county_name_list)
+    return michigan_data_dict
+
+
+
+conn = access_table("demographic_info.db")
+cur = conn.cursor()
+michigan_data = get_michigan_data(cur, conn)
+
+# Put the full dictionary of Michigan specific data into a JSON file
+def make_json(data, filename):
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(script_dir)
+    final_project_dir = os.path.join(parent_dir, "FinalProject")
+    json_file_path = os.path.join(final_project_dir, filename)
+
+    with open (json_file_path, "w") as my_file:
+        json_data = json.dumps(data)
+        my_file.write(json_data)
+
+make_json(michigan_data, "michigan_census_data.json")
+
+
+
+# Get all counties with a higher percentage of white and black population and find the poverty rates for each. Then, find the average poverty rate and 
+# determine if this is above or below the national/State of Michigan average. We will make a visualization using this data of a QQ plot to find statistical significance
+def get_highest_poverty_rates(cur, conn):
+    cur.execute('''SELECT id FROM US_states WHERE name = 'Michigan' ''')
+    id = int(cur.fetchone()[0])
+
+    cur.execute('''SELECT county_id, population, white_population_percentage, black_population_percentage, poverty_percentage
+                FROM US_Demographic_Info WHERE state_id = ? AND poverty_percentage > ?''', (id, national_poverty_rate))
+    highest_poverty_rate = cur.fetchall()
+    print (highest_poverty_rate)
+
+get_highest_poverty_rates(cur, conn)
+
+
+#We should pull our data from NCES to determine if there is a correlation between lower test scores and racial or gender categories. If there is, we can 
+# make conclusions about whether this is because of any greater or lesser risk of poverty.
+
+
+
+
+
+# We will look at both the NCES and NAEP data to see what the relationship is between Michigan's per capita personal income change over time and the
+# change in test scores over time.
