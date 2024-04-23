@@ -68,6 +68,7 @@ def make_json(data, filename):
 
     with open (json_file_path, "w") as my_file:
         json_data = json.dumps(data)
+        print (type(json_data))
         my_file.write(json_data)
 
 make_json(michigan_data, "michigan_census_data.json")
