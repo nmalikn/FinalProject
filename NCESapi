@@ -115,39 +115,36 @@ def temp(filename, cur, conn, start_index = 0):
     pass
 
 #MAKE MAIN DATABASE --> SUBJECT(NUMBER KEY), YEAR, SCORE, GENDER/RACE
-def create_main_table(filename, cur, conn, start_index=0):
-    cur.execute("CREATE TABLE IF NOT EXISTS CompleteData (id INTEGER PRIMARY KEY, subject_id INTEGER, year INTEGER, score DEC, gender_race_id INTEGER)")
+def create_main_table(filename, cur, conn):
+    cur.execute("CREATE TABLE IF NOT EXISTS NCESdata (id INTEGER PRIMARY KEY, subject_id INTEGER, year INTEGER, score DEC, gender_race_id INTEGER)")
 
     f = open(filename)
     file_data = f.read()
     f.close()
     json_data = json.loads(file_data)
-
     new_data = rewrite_json_data(json_data)
-    id_count = 0
-    temp = start_index
+    print (new_data)
 
-    while temp <= 100:
-        low = temp
-        high = min(temp+25, len(new_data))
-        #for i in range(temp, temp+25):
-        #for i in range(temp, min(temp+25, len(new_data))):
-        for i in range(low, high):
-            print(f'low: {low}')
-            print(f'high: {high}')
-            student, ids = list(new_data.items())[i]
-            for id in ids:
-                if isinstance(id, int):
-                    print(f'ID IS HERE {id}')
-                    subject_id = student[0]
-                    year = student[2]
-                    value = student[3]
-                    gender_race_id = student[4]
+    #Will get the count to set our starting to whatever the current amount of ids is
+    cur.execute('''SELECT COUNT(id) FROM NCESdata''')
+    id_count = int(cur.fetchone()[0])
+    if id_count + 25 > len(new_data):
+        end_count = len(new_data)
+    else:
+        end_count = id_count + 25
 
-                    cur.execute("INSERT OR IGNORE INTO CompleteData (id, subject_id, year, score, gender_race_id) VALUES (?,?,?,?,?)", 
-                                (id_count, subject_id, year, value, gender_race_id)) 
-                    id_count += 1
-        temp += 25
+    while id_count < end_count:
+        
+        student = list(new_data.keys())[id_count]
+        subject_id = student[0]
+        year = student[2]
+        value = student[3]
+        gender_race_id = student[4]
+
+        cur.execute("INSERT OR IGNORE INTO NCESdata (id, subject_id, year, score, gender_race_id) VALUES (?,?,?,?,?)", 
+                    (id_count, subject_id, year, value, gender_race_id)) 
+        id_count += 1
+
     conn.commit()
             
 
@@ -170,14 +167,7 @@ def main():
         print("Data stored successfully!")
     create_gender_race_table("combined_data.json", cur, conn)
     #create_main_table("combined_data.json", cur, conn)
-    start_index = 0
-    while True:
-        create_main_table("combined_data.json", cur, conn, start_index)
-        start_index += 25
-        print("Finished processing up to index:", start_index)
-        if start_index >= 100:
-            print("All data processed.")
-            break
+    create_main_table("combined_data.json", cur, conn)
     
 
 
