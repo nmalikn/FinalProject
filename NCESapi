@@ -77,7 +77,7 @@ def rewrite_json_data(combined_data):
 #Store data SQLite DATABASE
 def set_up_database(data):
     path = os.path.dirname(os.path.abspath(__file__))
-    conn = sqlite3.connect('your_database.db')
+    conn = sqlite3.connect('FinalProject.db')
     cur = conn.cursor()
     return cur, conn
     

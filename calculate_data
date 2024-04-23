@@ -55,7 +55,7 @@ def get_michigan_data(cur, conn):
 
 
 
-conn = access_table("demographic_info.db")
+conn = access_table("FinalProject.db")
 cur = conn.cursor()
 michigan_data = get_michigan_data(cur, conn)
 
@@ -85,7 +85,54 @@ def get_highest_poverty_rates(cur, conn):
     highest_poverty_rate = cur.fetchall()
     print (highest_poverty_rate)
 
-get_highest_poverty_rates(cur, conn)
+    poverty_data_dict = {}
+
+    for item in highest_poverty_rate:
+        county_id = item[0]
+        cur.execute('''SELECT Name FROM US_counties WHERE id = ?''', (county_id,))
+        county_name = cur.fetchone()[0]
+
+        poverty_data_dict[county_name] = {}
+        population = item[1]
+        white_percentage = item[2]
+        black_percentage = item[3]
+        poverty_rate = item[4]
+
+        poverty_data_dict[county_name]["Population"] = population
+        poverty_data_dict[county_name]["White Percentage"] = white_percentage
+        poverty_data_dict[county_name]["Black Percentage"] = black_percentage
+        poverty_data_dict[county_name]["Poverty Rate"] = poverty_rate 
+    
+
+    
+
+    return poverty_data_dict
+
+MI_poverty_data = get_highest_poverty_rates(cur, conn)
+make_json(MI_poverty_data, "michigan_poverty_rates.json")
+
+
+#This function will pull the year, michigan per capita personal income, and the national per capita personal income to create a 
+#line graph of each point over the years
+
+def get_per_capita_income_data (cur, conn):
+    cur.execute('''SELECT year, michigan_percapita_income, national_percapita_income FROM MI_PerCapita_PersonalIncome ''')
+    percapita_data = cur.fetchall()
+
+    per_capita_dict = {}
+    for item in percapita_data:
+        year = int(item[0])
+        per_capita_dict[year] = {}
+        michigan_income = item[1]
+        national_income = item[2]
+
+        per_capita_dict[year]["Michigan Per Capita Income"] = michigan_income
+        per_capita_dict[year]["National Per Capita Income"] = national_income
+
+    return  per_capita_dict
+
+percapitadata = get_per_capita_income_data(cur, conn)
+make_json(percapitadata, "per_capita_data.json")
 
 
 #We should pull our data from NCES to determine if there is a correlation between lower test scores and racial or gender categories. If there is, we can 

@@ -149,7 +149,7 @@ def main():
     county_data = scrape_data_counties()
     state_data = scrape_state_names()
     if county_data:
-        conn = set_up_database("demographic_info.db")
+        conn = set_up_database("FinalProject.db")
         cur = conn.cursor()
         print("Data stored successfully!")
         make_county_table(county_data, cur, conn)

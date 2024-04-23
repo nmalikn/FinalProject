@@ -75,7 +75,7 @@ print (scrape_data())
 def main():
     data = scrape_data()
     if data:
-        conn = set_up_database("personal_income.db")
+        conn = set_up_database("FinalProject.db")
         cur = conn.cursor()
         print("Data stored successfully!")
 
