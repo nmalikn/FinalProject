@@ -1,0 +1,79 @@
+from bs4 import BeautifulSoup
+import re
+import os
+import requests
+import unittest
+import sqlite3
+import json
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+#This will read in our json files
+def read_json(filename):
+    with open (filename, "r") as my_file:
+        data = json.load(my_file)
+        #print (type(data))
+
+    return data
+
+percapitadata = read_json("per_capita_data.json")
+
+#this will parse the percapita data to make an x list (with the years) and two y lists with the incomes
+def parse_percapita_data(data):
+
+    x_values = []
+    y_valuesMI = []
+    y_valuesUS = []
+
+    for year in data:
+        x_values.append(int(year))
+        y_valuesMI.append(data[year]["Michigan Per Capita Income"])
+        y_valuesUS.append(data[year]["National Per Capita Income"])
+
+    #print (x_values, y_valuesMI, y_valuesUS)
+
+    x1 = np.array(x_values)
+    x2 = np.array(x_values)
+    yMI = np.array(y_valuesMI)
+    yUS = np.array(y_valuesUS)
+
+    plt.plot(x1, yMI, x2, yUS)
+    plt.title("Per Capita Personal Income in Michigan and Nationally from 1990-2014")
+    plt.xlabel("Year")
+    plt.ylabel("Per Capita Personal Income")
+    plt.legend(["Michigan", "National"], loc = "lower right")
+
+    plt.show()
+
+#parse_percapita_data(percapitadata)
+
+#Next, we will make a scatterplot with the NCB data to see if there is a correlation between higher poverty rates and racial demographic
+MIpovertyrates = read_json("michigan_poverty_rates.json")
+#print (MIpovertyrates)
+
+def parse_poverty_data(data):
+
+    poverty_rate = []
+    white_pop = []
+    black_pop = []
+    for county in data:
+        poverty_rate.append(data[county]["Poverty Rate"])
+        white_pop.append(data[county]["White Percentage"])
+        black_pop.append(data[county]["Black Percentage"])
+
+    x1 = np.array(poverty_rate)
+    x2 = np.array(poverty_rate)
+    yBlack = np.array(black_pop)
+    yWhite = np.array(white_pop)
+
+    plt.scatter(x1, yBlack)
+    plt.scatter(x2, yWhite)
+    plt.title("Scatterplot of Racial Makeup of Michigan Counties above the National Poverty Rate")
+    plt.xlabel("Poverty Rate")
+    plt.ylabel("Demographic Percentage")
+    plt.legend(["Black Population", "White Population"])
+
+    plt.show()
+
+parse_poverty_data(MIpovertyrates)

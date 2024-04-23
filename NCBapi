@@ -15,7 +15,7 @@ API_key = "e8128ade33840f3a6e329355e63ee69cae8d5dd3"
 parameters = {"key": API_key}
 query_url = "https://api.census.gov/data/2022/acs/acs1/profile"
 
-#We will use this url to specify variables (after get=) for Michigan using congressional districts as our measuring point
+#We will use this url to specify variables (after get=) for Michigan using counties as our measuring point
 testing_url = "https://api.census.gov/data/2022/acs/acs1/profile?get=NAME,DP02_0001E,DP03_0128PE&for=congressional%20district:*&in=state:26"
 total_population = "DP02_0001E"
 families_under_10k = "DP03_0076E"
@@ -140,11 +140,6 @@ def add_main_data(county_data, cur, conn):
 
 
 
-#def add_data_to_table(city_data,county_data, cur, conn):
-
-
-
-
 
 
 
@@ -154,7 +149,7 @@ def main():
     county_data = scrape_data_counties()
     state_data = scrape_state_names()
     if county_data:
-        conn = set_up_database("demographic_info.db")
+        conn = set_up_database("FinalProject.db")
         cur = conn.cursor()
         print("Data stored successfully!")
         make_county_table(county_data, cur, conn)
