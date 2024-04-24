@@ -13,11 +13,10 @@ import numpy as np
 def read_json(filename):
     with open (filename, "r") as my_file:
         data = json.load(my_file)
-        #print (type(data))
 
     return data
 
-percapitadata = read_json("per_capita_data.json")
+
 
 #this will parse the percapita data to make an x list (with the years) and two y lists with the incomes
 def parse_percapita_data(data):
@@ -30,8 +29,6 @@ def parse_percapita_data(data):
         x_values.append(int(year))
         y_valuesMI.append(data[year]["Michigan Per Capita Income"])
         y_valuesUS.append(data[year]["National Per Capita Income"])
-
-    #print (x_values, y_valuesMI, y_valuesUS)
 
     x1 = np.array(x_values)
     x2 = np.array(x_values)
@@ -46,12 +43,7 @@ def parse_percapita_data(data):
 
     plt.show()
 
-parse_percapita_data(percapitadata)
-
 #Next, we will make a scatterplot with the NCB data to see if there is a correlation between higher poverty rates and racial demographic
-MIpovertyrates = read_json("michigan_poverty_rates.json")
-#print (MIpovertyrates)
-
 def parse_poverty_data(data):
 
     poverty_rate = []
@@ -76,4 +68,40 @@ def parse_poverty_data(data):
 
     plt.show()
 
-parse_poverty_data(MIpovertyrates)
+#This function will take our NCES data and make a bargraph showing the average scores of each racial and gender group.
+
+def parse_nces_data(data):
+
+    categories = []
+    averages = []
+    for group in data:
+        categories.append(group)
+        averages.append(data[group]["Average Score"])
+
+    x = np.array(categories)
+    y = np.array(averages)
+
+    plt.bar(x, y, color = "orange")
+    plt.title("Bar graph of the average NCES scores for each race and gender combination")
+    plt.xlabel("Race and gender categories")
+    plt.ylabel("Average NCES score")
+    plt.show()
+
+
+def main():
+    #read in all of our json files
+    percapitadata = read_json("per_capita_data.json")
+    MIpovertyrates = read_json("michigan_poverty_rates.json")
+    NCES_averages = read_json("NCES_average_scores_by_race_gender")
+
+    #load our visualizations
+    parse_percapita_data(percapitadata)
+    parse_poverty_data(MIpovertyrates)
+    parse_nces_data(NCES_averages)
+
+if __name__ == "__main__":
+    main()
+
+
+
+

@@ -14,7 +14,6 @@ national_poverty_rate = 11.5
 def access_table(db_name):
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path + "/" + db_name)
-    cur = conn.cursor()
     return conn
 
 def get_michigan_data(cur, conn):
@@ -44,16 +43,7 @@ def get_michigan_data(cur, conn):
         michigan_data_dict[county_name_list[i]]["black percentage"] = black_population
         michigan_data_dict[county_name_list[i]]["poverty percentage"] = poverty_percentage
 
-    #print (michigan_data_dict)
-    #print (michigan_data)
-    # print (county_name_list)
     return michigan_data_dict
-
-
-
-conn = access_table("FinalProject.db")
-cur = conn.cursor()
-michigan_data = get_michigan_data(cur, conn)
 
 # Put the full dictionary of Michigan specific data into a JSON file
 def make_json(data, filename):
@@ -63,15 +53,13 @@ def make_json(data, filename):
     json_file_path = os.path.join(final_project_dir, filename)
 
     with open (json_file_path, "w") as my_file:
-        json_data = json.dumps(data)
-        my_file.write(json_data)
+        json.dump(data, my_file)
 
-make_json(michigan_data, "michigan_census_data.json")
 
 
 
 # Get all counties with a higher percentage of white and black population and find the poverty rates for each. Then, find the average poverty rate and 
-# determine if this is above or below the national/State of Michigan average. We will make a visualization using this data of a QQ plot to find statistical significance
+# determine if this is above or below the national/State of Michigan average. We will make a visualization using this data of a scatterplot to find correlations
 def get_highest_poverty_rates(cur, conn):
     cur.execute('''SELECT id FROM US_states WHERE name = 'Michigan' ''')
     id = int(cur.fetchone()[0])
@@ -103,9 +91,6 @@ def get_highest_poverty_rates(cur, conn):
 
     return poverty_data_dict
 
-MI_poverty_data = get_highest_poverty_rates(cur, conn)
-make_json(MI_poverty_data, "michigan_poverty_rates.json")
-
 
 #This function will pull the year, michigan per capita personal income, and the national per capita personal income to create a 
 #line graph of each point over the years
@@ -126,16 +111,52 @@ def get_per_capita_income_data (cur, conn):
 
     return  per_capita_dict
 
-percapitadata = get_per_capita_income_data(cur, conn)
-make_json(percapitadata, "per_capita_data.json")
-
-
 #We should pull our data from NCES to determine if there is a correlation between lower test scores and racial or gender categories. If there is, we can 
 # make conclusions about whether this is because of any greater or lesser risk of poverty.
 
+def parse_NCES_data(cur, conn):
+    cur.execute('''SELECT NCESdata.year, NCESdata.score, gender_race_id.gender_race FROM NCESdata JOIN gender_race_id ON 
+                NCESdata.gender_race_id = gender_race_id.id WHERE score != 999  ''')
+    NCESdata = cur.fetchall()
+
+    data_dict = {}
+    for student in NCESdata:
+        if student[-1] not in data_dict:
+            data_dict[student[-1]] = []
+        else:
+            data_dict[student[-1]].append(student[1])
 
 
+    average_dict = {}
+    for race_gender in data_dict:
+        length = len(data_dict[race_gender])
+        total = sum(data_dict[race_gender])
+        average = total / length
+
+        if race_gender not in average_dict:
+            average_dict[race_gender] = {"Average Score": average}
+
+    return average_dict
+        
 
 
-# We will look at both the NCES and NAEP data to see what the relationship is between Michigan's per capita personal income change over time and the
-# change in test scores over time.
+def main():
+    conn = access_table("FinalProject.db")
+    cur = conn.cursor()
+
+    #get all of the data
+    michigan_data = get_michigan_data(cur, conn)
+    MI_poverty_data = get_highest_poverty_rates(cur, conn)
+    percapitadata = get_per_capita_income_data(cur, conn)
+    NCES_average_score = parse_NCES_data(cur, conn)
+
+    #load all of the data into separate json files
+    make_json(michigan_data, "michigan_census_data.json")
+    make_json(MI_poverty_data, "michigan_poverty_rates.json")
+    make_json(percapitadata, "per_capita_data.json")
+    make_json(NCES_average_score, "NCES_average_scores_by_race_gender")
+
+if __name__ == "__main__":
+    main()
+
+
