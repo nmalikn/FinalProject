@@ -154,7 +154,7 @@ def main():
     make_json(michigan_data, "michigan_census_data.json")
     make_json(MI_poverty_data, "michigan_poverty_rates.json")
     make_json(percapitadata, "per_capita_data.json")
-    make_json(NCES_average_score, "NCES_average_scores_by_race_gender")
+    make_json(NCES_average_score, "NCES_average_scores_by_race_gender.json")
 
 if __name__ == "__main__":
     main()

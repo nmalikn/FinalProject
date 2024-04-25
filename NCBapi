@@ -6,17 +6,10 @@ import unittest
 import sqlite3
 import json
 
-#Important Links to work on this code
-#https://api.census.gov/data/2022/acs/acs1/profile.html
-#https://www.census.gov/library/video/2020/using-api-results-for-multiple-estimates.html
 
-
-API_key = "e8128ade33840f3a6e329355e63ee69cae8d5dd3"
-parameters = {"key": API_key}
-query_url = "https://api.census.gov/data/2022/acs/acs1/profile"
 
 #We will use this url to specify variables (after get=) for Michigan using counties as our measuring point
-testing_url = "https://api.census.gov/data/2022/acs/acs1/profile?get=NAME,DP02_0001E,DP03_0128PE&for=congressional%20district:*&in=state:26"
+query_url = "https://api.census.gov/data/2022/acs/acs1/profile"
 total_population = "DP02_0001E"
 families_under_10k = "DP03_0076E"
 families_10k_to_14999 = "DP03_0077E"
@@ -27,21 +20,8 @@ pop_percent_black = "DP05_0038PE"
 pop_percent_asian = "DP05_0044PE"
 poverty_percent = "DP03_0128PE"
 
-cities_breakdown = "county%20subdivision:*&in=state:26"
 county_breakdown = "county:*&in=state:*"
 #Function to CALL THE API KEY
-def scrape_data_cities():
-    url = f'{query_url}?get=NAME,{total_population},{pop_percent_white},{pop_percent_black},{poverty_percent}&for={cities_breakdown}'
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
-        print (data)
-        return data
-    else:
-        print ("Could not access Census data")
-        return None
-
-#print (scrape_data_cities())
 
 def scrape_data_counties():
     url = f"{query_url}?get=NAME,{total_population},{pop_percent_white},{pop_percent_black},{poverty_percent}&for={county_breakdown}"

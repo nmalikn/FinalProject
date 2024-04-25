@@ -92,7 +92,7 @@ def main():
     #read in all of our json files
     percapitadata = read_json("per_capita_data.json")
     MIpovertyrates = read_json("michigan_poverty_rates.json")
-    NCES_averages = read_json("NCES_average_scores_by_race_gender")
+    NCES_averages = read_json("NCES_average_scores_by_race_gender.json")
 
     #load our visualizations
     parse_percapita_data(percapitadata)
