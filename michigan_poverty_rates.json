@@ -1,1 +1,98 @@
-{"Bay County": {"Population": 44664, "White Percentage": 89.6, "Black Percentage": 1.5, "Poverty Rate": 15.4}, "Berrien County": {"Population": 63311, "White Percentage": 73.1, "Black Percentage": 13.4, "Poverty Rate": 14.9}, "Calhoun County": {"Population": 53388, "White Percentage": 76.9, "Black Percentage": 11, "Poverty Rate": 13.2}, "Genesee County": {"Population": 167950, "White Percentage": 72.4, "Black Percentage": 19.5, "Poverty Rate": 16.4}, "Ingham County": {"Population": 118485, "White Percentage": 68.5, "Black Percentage": 10.8, "Poverty Rate": 16.5}, "Jackson County": {"Population": 63368, "White Percentage": 82.5, "Black Percentage": 6.1, "Poverty Rate": 12.8}, "Kalamazoo County": {"Population": 108397, "White Percentage": 76.7, "Black Percentage": 10.6, "Poverty Rate": 11.8}, "Lenawee County": {"Population": 38264, "White Percentage": 89, "Black Percentage": 2.4, "Poverty Rate": 12.1}, "Montcalm County": {"Population": 25218, "White Percentage": 88.1, "Black Percentage": 2.7, "Poverty Rate": 14.2}, "Muskegon County": {"Population": 67255, "White Percentage": 77.3, "Black Percentage": 12.6, "Poverty Rate": 14.3}, "Saginaw County": {"Population": 79275, "White Percentage": 70.5, "Black Percentage": 18.8, "Poverty Rate": 18.4}, "St. Clair County": {"Population": 69109, "White Percentage": 90.6, "Black Percentage": 2.5, "Poverty Rate": 13.7}, "Shiawassee County": {"Population": 28629, "White Percentage": 93.8, "Black Percentage": 0.4, "Poverty Rate": 12.7}, "Van Buren County": {"Population": 31239, "White Percentage": 81, "Black Percentage": 3.1, "Poverty Rate": 14.9}, "Washtenaw County": {"Population": 150945, "White Percentage": 69.4, "Black Percentage": 11.1, "Poverty Rate": 13.9}, "Wayne County": {"Population": 691389, "White Percentage": 49.3, "Black Percentage": 37.1, "Poverty Rate": 21.2}}
+{
+    "Bay County": {
+        "Population": 44664,
+        "White Percentage": 89.6,
+        "Black Percentage": 1.5,
+        "Poverty Rate": 15.4
+    },
+    "Berrien County": {
+        "Population": 63311,
+        "White Percentage": 73.1,
+        "Black Percentage": 13.4,
+        "Poverty Rate": 14.9
+    },
+    "Calhoun County": {
+        "Population": 53388,
+        "White Percentage": 76.9,
+        "Black Percentage": 11,
+        "Poverty Rate": 13.2
+    },
+    "Genesee County": {
+        "Population": 167950,
+        "White Percentage": 72.4,
+        "Black Percentage": 19.5,
+        "Poverty Rate": 16.4
+    },
+    "Ingham County": {
+        "Population": 118485,
+        "White Percentage": 68.5,
+        "Black Percentage": 10.8,
+        "Poverty Rate": 16.5
+    },
+    "Jackson County": {
+        "Population": 63368,
+        "White Percentage": 82.5,
+        "Black Percentage": 6.1,
+        "Poverty Rate": 12.8
+    },
+    "Kalamazoo County": {
+        "Population": 108397,
+        "White Percentage": 76.7,
+        "Black Percentage": 10.6,
+        "Poverty Rate": 11.8
+    },
+    "Lenawee County": {
+        "Population": 38264,
+        "White Percentage": 89,
+        "Black Percentage": 2.4,
+        "Poverty Rate": 12.1
+    },
+    "Montcalm County": {
+        "Population": 25218,
+        "White Percentage": 88.1,
+        "Black Percentage": 2.7,
+        "Poverty Rate": 14.2
+    },
+    "Muskegon County": {
+        "Population": 67255,
+        "White Percentage": 77.3,
+        "Black Percentage": 12.6,
+        "Poverty Rate": 14.3
+    },
+    "Saginaw County": {
+        "Population": 79275,
+        "White Percentage": 70.5,
+        "Black Percentage": 18.8,
+        "Poverty Rate": 18.4
+    },
+    "St. Clair County": {
+        "Population": 69109,
+        "White Percentage": 90.6,
+        "Black Percentage": 2.5,
+        "Poverty Rate": 13.7
+    },
+    "Shiawassee County": {
+        "Population": 28629,
+        "White Percentage": 93.8,
+        "Black Percentage": 0.4,
+        "Poverty Rate": 12.7
+    },
+    "Van Buren County": {
+        "Population": 31239,
+        "White Percentage": 81,
+        "Black Percentage": 3.1,
+        "Poverty Rate": 14.9
+    },
+    "Washtenaw County": {
+        "Population": 150945,
+        "White Percentage": 69.4,
+        "Black Percentage": 11.1,
+        "Poverty Rate": 13.9
+    },
+    "Wayne County": {
+        "Population": 691389,
+        "White Percentage": 49.3,
+        "Black Percentage": 37.1,
+        "Poverty Rate": 21.2
+    }
+}

@@ -105,14 +105,12 @@ def create_gender_race_table(data, cur, conn):
         "Black+Female",
         "Hispanic+Female",
         ]
-    cur.execute("DROP TABLE IF EXISTS gender_race_id")
-    cur.execute("CREATE TABLE gender_race_id (id INTEGER PRIMARY KEY, gender_race TEXT)")
+    cur.execute("CREATE TABLE IF NOT EXISTS gender_race_id (id INTEGER PRIMARY KEY, gender_race TEXT)")
     for i in range(len(gender_race_id)):
-        cur.execute("INSERT INTO gender_race_id (id,gender_race) VALUES (?,?)",(i, gender_race_id[i]))
+        cur.execute("INSERT OR IGNORE INTO gender_race_id (id,gender_race) VALUES (?,?)",(i, gender_race_id[i]))
     conn.commit()
 
-def temp(filename, cur, conn, start_index = 0):
-    pass
+
 
 #MAKE MAIN DATABASE --> SUBJECT(NUMBER KEY), YEAR, SCORE, GENDER/RACE
 def create_main_table(filename, cur, conn):
@@ -123,7 +121,7 @@ def create_main_table(filename, cur, conn):
     f.close()
     json_data = json.loads(file_data)
     new_data = rewrite_json_data(json_data)
-    print (new_data)
+    #print (new_data)
 
     #Will get the count to set our starting to whatever the current amount of ids is
     cur.execute('''SELECT COUNT(id) FROM NCESdata''')

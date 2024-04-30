@@ -1,1 +1,130 @@
-{"1990": {"Michigan Per Capita Income": 19051, "National Per Capita Income": 19621}, "1991": {"Michigan Per Capita Income": 19298, "National Per Capita Income": 20030}, "1992": {"Michigan Per Capita Income": 20280, "National Per Capita Income": 21090}, "1993": {"Michigan Per Capita Income": 21219, "National Per Capita Income": 21733}, "1994": {"Michigan Per Capita Income": 22687, "National Per Capita Income": 22575}, "1995": {"Michigan Per Capita Income": 23801, "National Per Capita Income": 23607}, "1996": {"Michigan Per Capita Income": 24821, "National Per Capita Income": 24771}, "1997": {"Michigan Per Capita Income": 25990, "National Per Capita Income": 25993}, "1998": {"Michigan Per Capita Income": 27430, "National Per Capita Income": 27557}, "1999": {"Michigan Per Capita Income": 28629, "National Per Capita Income": 28693}, "2000": {"Michigan Per Capita Income": 30344, "National Per Capita Income": 30672}, "2001": {"Michigan Per Capita Income": 30749, "National Per Capita Income": 31617}, "2002": {"Michigan Per Capita Income": 30602, "National Per Capita Income": 31839}, "2003": {"Michigan Per Capita Income": 31279, "National Per Capita Income": 32717}, "2004": {"Michigan Per Capita Income": 32168, "National Per Capita Income": 34280}, "2005": {"Michigan Per Capita Income": 32946, "National Per Capita Income": 35868}, "2006": {"Michigan Per Capita Income": 33812, "National Per Capita Income": 38120}, "2007": {"Michigan Per Capita Income": 34929, "National Per Capita Income": 39883}, "2008": {"Michigan Per Capita Income": 35969, "National Per Capita Income": 41026}, "2009": {"Michigan Per Capita Income": 34307, "National Per Capita Income": 39356}, "2010": {"Michigan Per Capita Income": 35760, "National Per Capita Income": 40683}, "2011": {"Michigan Per Capita Income": 37781, "National Per Capita Income": 42747}, "2012": {"Michigan Per Capita Income": 39266, "National Per Capita Income": 44548}, "2013": {"Michigan Per Capita Income": 39566, "National Per Capita Income": 44798}, "2014": {"Michigan Per Capita Income": 41207, "National Per Capita Income": 46887}, "2015": {"Michigan Per Capita Income": 43425, "National Per Capita Income": 48725}, "2016": {"Michigan Per Capita Income": 44527, "National Per Capita Income": 49613}, "2017": {"Michigan Per Capita Income": 45648, "National Per Capita Income": 51573}, "2018": {"Michigan Per Capita Income": 47314, "National Per Capita Income": 53817}, "2019": {"Michigan Per Capita Income": 48820, "National Per Capita Income": 55724}, "2020": {"Michigan Per Capita Income": 52724, "National Per Capita Income": 59147}, "2021": {"Michigan Per Capita Income": 55551, "National Per Capita Income": 63444}}
+{
+    "1990": {
+        "Michigan Per Capita Income": 19051,
+        "National Per Capita Income": 19621
+    },
+    "1991": {
+        "Michigan Per Capita Income": 19298,
+        "National Per Capita Income": 20030
+    },
+    "1992": {
+        "Michigan Per Capita Income": 20280,
+        "National Per Capita Income": 21090
+    },
+    "1993": {
+        "Michigan Per Capita Income": 21219,
+        "National Per Capita Income": 21733
+    },
+    "1994": {
+        "Michigan Per Capita Income": 22687,
+        "National Per Capita Income": 22575
+    },
+    "1995": {
+        "Michigan Per Capita Income": 23801,
+        "National Per Capita Income": 23607
+    },
+    "1996": {
+        "Michigan Per Capita Income": 24821,
+        "National Per Capita Income": 24771
+    },
+    "1997": {
+        "Michigan Per Capita Income": 25990,
+        "National Per Capita Income": 25993
+    },
+    "1998": {
+        "Michigan Per Capita Income": 27430,
+        "National Per Capita Income": 27557
+    },
+    "1999": {
+        "Michigan Per Capita Income": 28629,
+        "National Per Capita Income": 28693
+    },
+    "2000": {
+        "Michigan Per Capita Income": 30344,
+        "National Per Capita Income": 30672
+    },
+    "2001": {
+        "Michigan Per Capita Income": 30749,
+        "National Per Capita Income": 31617
+    },
+    "2002": {
+        "Michigan Per Capita Income": 30602,
+        "National Per Capita Income": 31839
+    },
+    "2003": {
+        "Michigan Per Capita Income": 31279,
+        "National Per Capita Income": 32717
+    },
+    "2004": {
+        "Michigan Per Capita Income": 32168,
+        "National Per Capita Income": 34280
+    },
+    "2005": {
+        "Michigan Per Capita Income": 32946,
+        "National Per Capita Income": 35868
+    },
+    "2006": {
+        "Michigan Per Capita Income": 33812,
+        "National Per Capita Income": 38120
+    },
+    "2007": {
+        "Michigan Per Capita Income": 34929,
+        "National Per Capita Income": 39883
+    },
+    "2008": {
+        "Michigan Per Capita Income": 35969,
+        "National Per Capita Income": 41026
+    },
+    "2009": {
+        "Michigan Per Capita Income": 34307,
+        "National Per Capita Income": 39356
+    },
+    "2010": {
+        "Michigan Per Capita Income": 35760,
+        "National Per Capita Income": 40683
+    },
+    "2011": {
+        "Michigan Per Capita Income": 37781,
+        "National Per Capita Income": 42747
+    },
+    "2012": {
+        "Michigan Per Capita Income": 39266,
+        "National Per Capita Income": 44548
+    },
+    "2013": {
+        "Michigan Per Capita Income": 39566,
+        "National Per Capita Income": 44798
+    },
+    "2014": {
+        "Michigan Per Capita Income": 41207,
+        "National Per Capita Income": 46887
+    },
+    "2015": {
+        "Michigan Per Capita Income": 43425,
+        "National Per Capita Income": 48725
+    },
+    "2016": {
+        "Michigan Per Capita Income": 44527,
+        "National Per Capita Income": 49613
+    },
+    "2017": {
+        "Michigan Per Capita Income": 45648,
+        "National Per Capita Income": 51573
+    },
+    "2018": {
+        "Michigan Per Capita Income": 47314,
+        "National Per Capita Income": 53817
+    },
+    "2019": {
+        "Michigan Per Capita Income": 48820,
+        "National Per Capita Income": 55724
+    },
+    "2020": {
+        "Michigan Per Capita Income": 52724,
+        "National Per Capita Income": 59147
+    },
+    "2021": {
+        "Michigan Per Capita Income": 55551,
+        "National Per Capita Income": 63444
+    }
+}

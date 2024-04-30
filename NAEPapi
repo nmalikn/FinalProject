@@ -68,7 +68,7 @@ def add_data_to_table(data, cur, conn):
     conn.commit()
     
 
-print (scrape_data())
+#print (scrape_data())
 
 
 

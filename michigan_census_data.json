@@ -1,1 +1,182 @@
-{"Allegan County": {"population": 45890, "white percentage": 87.9, "black percentage": 0.9, "poverty percentage": 9.9}, "Bay County": {"population": 44664, "white percentage": 89.6, "black percentage": 1.5, "poverty percentage": 15.4}, "Berrien County": {"population": 63311, "white percentage": 73.1, "black percentage": 13.4, "poverty percentage": 14.9}, "Calhoun County": {"population": 53388, "white percentage": 76.9, "black percentage": 11, "poverty percentage": 13.2}, "Clinton County": {"population": 31010, "white percentage": 88.3, "black percentage": 2, "poverty percentage": 11.5}, "Eaton County": {"population": 44942, "white percentage": 81.6, "black percentage": 6.6, "poverty percentage": 8.9}, "Genesee County": {"population": 167950, "white percentage": 72.4, "black percentage": 19.5, "poverty percentage": 16.4}, "Grand Traverse County": {"population": 39581, "white percentage": 90.4, "black percentage": 0.6, "poverty percentage": 11.5}, "Ingham County": {"population": 118485, "white percentage": 68.5, "black percentage": 10.8, "poverty percentage": 16.5}, "Ionia County": {"population": 22878, "white percentage": 86.8, "black percentage": 3.2, "poverty percentage": 11.5}, "Jackson County": {"population": 63368, "white percentage": 82.5, "black percentage": 6.1, "poverty percentage": 12.8}, "Kalamazoo County": {"population": 108397, "white percentage": 76.7, "black percentage": 10.6, "poverty percentage": 11.8}, "Kent County": {"population": 256173, "white percentage": 73.3, "black percentage": 9.7, "poverty percentage": 10.6}, "Lapeer County": {"population": 35259, "white percentage": 90.6, "black percentage": 0.6, "poverty percentage": 10.6}, "Lenawee County": {"population": 38264, "white percentage": 89, "black percentage": 2.4, "poverty percentage": 12.1}, "Livingston County": {"population": 76620, "white percentage": 93, "black percentage": 0.7, "poverty percentage": 4.6}, "Macomb County": {"population": 359089, "white percentage": 75.2, "black percentage": 12.5, "poverty percentage": 9.7}, "Marquette County": {"population": 28633, "white percentage": 90.8, "black percentage": 1.4, "poverty percentage": 11.3}, "Midland County": {"population": 35325, "white percentage": 90.2, "black percentage": 0.9, "poverty percentage": 7.7}, "Monroe County": {"population": 62946, "white percentage": 89.5, "black percentage": 1.1, "poverty percentage": 9.4}, "Montcalm County": {"population": 25218, "white percentage": 88.1, "black percentage": 2.7, "poverty percentage": 14.2}, "Muskegon County": {"population": 67255, "white percentage": 77.3, "black percentage": 12.6, "poverty percentage": 14.3}, "Oakland County": {"population": 530638, "white percentage": 69.7, "black percentage": 12.8, "poverty percentage": 8.1}, "Ottawa County": {"population": 111425, "white percentage": 83.8, "black percentage": 1.9, "poverty percentage": 8.6}, "Saginaw County": {"population": 79275, "white percentage": 70.5, "black percentage": 18.8, "poverty percentage": 18.4}, "St. Clair County": {"population": 69109, "white percentage": 90.6, "black percentage": 2.5, "poverty percentage": 13.7}, "Shiawassee County": {"population": 28629, "white percentage": 93.8, "black percentage": 0.4, "poverty percentage": 12.7}, "Van Buren County": {"population": 31239, "white percentage": 81, "black percentage": 3.1, "poverty percentage": 14.9}, "Washtenaw County": {"population": 150945, "white percentage": 69.4, "black percentage": 11.1, "poverty percentage": 13.9}, "Wayne County": {"population": 691389, "white percentage": 49.3, "black percentage": 37.1, "poverty percentage": 21.2}}
+{
+    "Allegan County": {
+        "population": 45890,
+        "white percentage": 87.9,
+        "black percentage": 0.9,
+        "poverty percentage": 9.9
+    },
+    "Bay County": {
+        "population": 44664,
+        "white percentage": 89.6,
+        "black percentage": 1.5,
+        "poverty percentage": 15.4
+    },
+    "Berrien County": {
+        "population": 63311,
+        "white percentage": 73.1,
+        "black percentage": 13.4,
+        "poverty percentage": 14.9
+    },
+    "Calhoun County": {
+        "population": 53388,
+        "white percentage": 76.9,
+        "black percentage": 11,
+        "poverty percentage": 13.2
+    },
+    "Clinton County": {
+        "population": 31010,
+        "white percentage": 88.3,
+        "black percentage": 2,
+        "poverty percentage": 11.5
+    },
+    "Eaton County": {
+        "population": 44942,
+        "white percentage": 81.6,
+        "black percentage": 6.6,
+        "poverty percentage": 8.9
+    },
+    "Genesee County": {
+        "population": 167950,
+        "white percentage": 72.4,
+        "black percentage": 19.5,
+        "poverty percentage": 16.4
+    },
+    "Grand Traverse County": {
+        "population": 39581,
+        "white percentage": 90.4,
+        "black percentage": 0.6,
+        "poverty percentage": 11.5
+    },
+    "Ingham County": {
+        "population": 118485,
+        "white percentage": 68.5,
+        "black percentage": 10.8,
+        "poverty percentage": 16.5
+    },
+    "Ionia County": {
+        "population": 22878,
+        "white percentage": 86.8,
+        "black percentage": 3.2,
+        "poverty percentage": 11.5
+    },
+    "Jackson County": {
+        "population": 63368,
+        "white percentage": 82.5,
+        "black percentage": 6.1,
+        "poverty percentage": 12.8
+    },
+    "Kalamazoo County": {
+        "population": 108397,
+        "white percentage": 76.7,
+        "black percentage": 10.6,
+        "poverty percentage": 11.8
+    },
+    "Kent County": {
+        "population": 256173,
+        "white percentage": 73.3,
+        "black percentage": 9.7,
+        "poverty percentage": 10.6
+    },
+    "Lapeer County": {
+        "population": 35259,
+        "white percentage": 90.6,
+        "black percentage": 0.6,
+        "poverty percentage": 10.6
+    },
+    "Lenawee County": {
+        "population": 38264,
+        "white percentage": 89,
+        "black percentage": 2.4,
+        "poverty percentage": 12.1
+    },
+    "Livingston County": {
+        "population": 76620,
+        "white percentage": 93,
+        "black percentage": 0.7,
+        "poverty percentage": 4.6
+    },
+    "Macomb County": {
+        "population": 359089,
+        "white percentage": 75.2,
+        "black percentage": 12.5,
+        "poverty percentage": 9.7
+    },
+    "Marquette County": {
+        "population": 28633,
+        "white percentage": 90.8,
+        "black percentage": 1.4,
+        "poverty percentage": 11.3
+    },
+    "Midland County": {
+        "population": 35325,
+        "white percentage": 90.2,
+        "black percentage": 0.9,
+        "poverty percentage": 7.7
+    },
+    "Monroe County": {
+        "population": 62946,
+        "white percentage": 89.5,
+        "black percentage": 1.1,
+        "poverty percentage": 9.4
+    },
+    "Montcalm County": {
+        "population": 25218,
+        "white percentage": 88.1,
+        "black percentage": 2.7,
+        "poverty percentage": 14.2
+    },
+    "Muskegon County": {
+        "population": 67255,
+        "white percentage": 77.3,
+        "black percentage": 12.6,
+        "poverty percentage": 14.3
+    },
+    "Oakland County": {
+        "population": 530638,
+        "white percentage": 69.7,
+        "black percentage": 12.8,
+        "poverty percentage": 8.1
+    },
+    "Ottawa County": {
+        "population": 111425,
+        "white percentage": 83.8,
+        "black percentage": 1.9,
+        "poverty percentage": 8.6
+    },
+    "Saginaw County": {
+        "population": 79275,
+        "white percentage": 70.5,
+        "black percentage": 18.8,
+        "poverty percentage": 18.4
+    },
+    "St. Clair County": {
+        "population": 69109,
+        "white percentage": 90.6,
+        "black percentage": 2.5,
+        "poverty percentage": 13.7
+    },
+    "Shiawassee County": {
+        "population": 28629,
+        "white percentage": 93.8,
+        "black percentage": 0.4,
+        "poverty percentage": 12.7
+    },
+    "Van Buren County": {
+        "population": 31239,
+        "white percentage": 81,
+        "black percentage": 3.1,
+        "poverty percentage": 14.9
+    },
+    "Washtenaw County": {
+        "population": 150945,
+        "white percentage": 69.4,
+        "black percentage": 11.1,
+        "poverty percentage": 13.9
+    },
+    "Wayne County": {
+        "population": 691389,
+        "white percentage": 49.3,
+        "black percentage": 37.1,
+        "poverty percentage": 21.2
+    }
+}

@@ -43,7 +43,46 @@ def parse_percapita_data(data):
 
     plt.show()
 
-#Next, we will make a scatterplot with the NCB data to see if there is a correlation between higher poverty rates and racial demographic
+#Difference in the Per Capita incomes of Michgan and Nationally, showing the Michigan Per Capita Income - National Per Capita Income
+def percapita_difference (data):
+    x_values = []
+    y_values = []
+
+    for year in data:
+        x_values.append(int(year))
+        y_values.append(data[year]["Difference in Michigan and National Per Capita Income"])
+
+    x1 = np.array(x_values)
+    y1 = np.array(y_values)
+
+    plt.plot(x1, y1)
+    plt.title("Difference in Michigan and National Per Capita Income from 1990-2021")
+    plt.xlabel("Year")
+    plt.ylabel("Difference in Per Capita Personal Income")
+    plt.legend(["Number Represents Between Michigan Per Capita Income - National Per Capita Income"], loc = "upper right")
+
+    plt.show()
+#Bargraph of the average poverty rate in Michigan compared to the National Poverty Rate
+def MI_average_poverty(data):
+    poverty_rates = []
+    names = []
+
+    for item in data:
+        names.append(item)
+        poverty_rates.append(data[item])
+
+    x1 = np.array(names)
+    y1 = np.array(poverty_rates)
+
+    plt.bar(x1, y1, color = "orange")
+    plt.title("Average Poverty Rate of Michigan Counties Compared to National Poverty Rate")
+    plt.xlabel("Geographic Division")
+    plt.ylabel("Poverty Rate")
+
+    plt.show()
+
+
+#Scatterplot of Michigan Counties where the Poverty Rate is higher than the national average
 def parse_poverty_data(data):
 
     poverty_rate = []
@@ -68,6 +107,8 @@ def parse_poverty_data(data):
 
     plt.show()
 
+
+
 #This function will take our NCES data and make a bargraph showing the average scores of each racial and gender group.
 
 def parse_nces_data(data):
@@ -91,12 +132,16 @@ def parse_nces_data(data):
 def main():
     #read in all of our json files
     percapitadata = read_json("per_capita_data.json")
+    percapitadifference = read_json("difference_in_per_capita_income.json")
     MIpovertyrates = read_json("michigan_poverty_rates.json")
+    average_poverty_rate = read_json("average_poverty_rate_MI_counties.json")
     NCES_averages = read_json("NCES_average_scores_by_race_gender.json")
 
     #load our visualizations
     parse_percapita_data(percapitadata)
+    percapita_difference(percapitadifference)
     parse_poverty_data(MIpovertyrates)
+    MI_average_poverty(average_poverty_rate)
     parse_nces_data(NCES_averages)
 
 if __name__ == "__main__":

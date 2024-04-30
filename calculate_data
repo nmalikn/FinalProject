@@ -53,7 +53,7 @@ def make_json(data, filename):
     json_file_path = os.path.join(final_project_dir, filename)
 
     with open (json_file_path, "w") as my_file:
-        json.dump(data, my_file)
+        json.dump(data, my_file, indent = 4)
 
 
 
@@ -91,6 +91,25 @@ def get_highest_poverty_rates(cur, conn):
 
     return poverty_data_dict
 
+#Add average poverty rate in Michigan
+def average_poverty_rate(cur, conn):
+    cur.execute('''SELECT id FROM US_states WHERE name = 'Michigan' ''')
+    id = int(cur.fetchone()[0])
+
+    cur.execute('''SELECT US_counties.Name, US_Demographic_Info.population, US_Demographic_Info.white_population_percentage, 
+                US_Demographic_Info.black_population_percentage, US_Demographic_Info.poverty_percentage
+                FROM US_Demographic_Info JOIN US_counties ON US_Demographic_Info.county_id
+                = US_counties.id WHERE state_id = ?''', (id,))
+    MI_counties = cur.fetchall()
+    total = 0
+    for item in MI_counties:
+        total += float(item[4])
+    average = round(total / len(MI_counties), 1)
+
+    return_dict = {"Average Poverty Rate of Michigan Counties": average, "National Average Poverty Rate": national_poverty_rate}
+    return return_dict
+
+
 
 #This function will pull the year, michigan per capita personal income, and the national per capita personal income to create a 
 #line graph of each point over the years
@@ -110,6 +129,24 @@ def get_per_capita_income_data (cur, conn):
         per_capita_dict[year]["National Per Capita Income"] = national_income
 
     return  per_capita_dict
+
+
+#Difference in Per Capita Incomes
+
+def get_difference_in_incomes(cur, conn):
+    cur.execute('''SELECT year, michigan_percapita_income, national_percapita_income FROM MI_PerCapita_PersonalIncome ''')
+    percapita_data = cur.fetchall()
+
+    per_capita_differences = {}
+    for item in percapita_data:
+        year = int(item[0])
+        per_capita_differences[year] = {}
+        michigan_income = int(item[1])
+        national_income = int(item[2])
+
+        difference = michigan_income - national_income
+        per_capita_differences[year]["Difference in Michigan and National Per Capita Income"] = difference
+    return per_capita_differences
 
 #We should pull our data from NCES to determine if there is a correlation between lower test scores and racial or gender categories. If there is, we can 
 # make conclusions about whether this is because of any greater or lesser risk of poverty.
@@ -149,12 +186,16 @@ def main():
     MI_poverty_data = get_highest_poverty_rates(cur, conn)
     percapitadata = get_per_capita_income_data(cur, conn)
     NCES_average_score = parse_NCES_data(cur, conn)
+    average_MI_poverty_rate = average_poverty_rate(cur, conn)
+    difference_in_percapita_incomes = get_difference_in_incomes(cur, conn)
 
     #load all of the data into separate json files
     make_json(michigan_data, "michigan_census_data.json")
     make_json(MI_poverty_data, "michigan_poverty_rates.json")
     make_json(percapitadata, "per_capita_data.json")
     make_json(NCES_average_score, "NCES_average_scores_by_race_gender.json")
+    make_json(average_MI_poverty_rate, "average_poverty_rate_MI_counties.json")
+    make_json(difference_in_percapita_incomes, "difference_in_per_capita_income.json")
 
 if __name__ == "__main__":
     main()
